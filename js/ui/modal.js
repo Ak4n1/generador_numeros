@@ -16,36 +16,36 @@ export class Modal {
 
         // Crear overlay
         const overlay = document.createElement('div');
-        overlay.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4';
+        overlay.className = 'modal-overlay';
         overlay.style.animation = 'fadeIn 0.2s ease';
 
         // Crear modal
         const modal = document.createElement('div');
-        modal.className = 'bg-white dark:bg-slate-900 rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto border border-slate-200 dark:border-primary/20';
+        modal.className = 'modal-basic';
         modal.style.animation = 'slideUp 0.3s ease';
 
         // Icono según tipo
         const icons = {
-            info: '<i class="fas fa-info-circle text-blue-500 text-4xl"></i>',
-            error: '<i class="fas fa-exclamation-circle text-red-500 text-4xl"></i>',
-            success: '<i class="fas fa-check-circle text-green-500 text-4xl"></i>',
-            warning: '<i class="fas fa-exclamation-triangle text-yellow-500 text-4xl"></i>'
+            info: '<i class="fas fa-info-circle modal-icon info"></i>',
+            error: '<i class="fas fa-exclamation-circle modal-icon error"></i>',
+            success: '<i class="fas fa-check-circle modal-icon success"></i>',
+            warning: '<i class="fas fa-exclamation-triangle modal-icon warning"></i>'
         };
 
         modal.innerHTML = `
-            <div class="p-5">
-                <div class="flex flex-col items-center text-center gap-3">
+            <div class="modal-content-basic">
+                <div class="modal-content-center">
                     ${icons[type]}
-                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">${title}</h3>
-                    <p class="text-slate-600 dark:text-slate-300 leading-relaxed text-sm">${message}</p>
+                    <h3 class="modal-title-basic">${title}</h3>
+                    <p class="modal-message">${message}</p>
                 </div>
-                <div class="flex gap-3 mt-5 ${showCancel ? 'justify-between' : 'justify-center'}">
+                <div class="modal-buttons ${showCancel ? 'between' : 'center'}">
                     ${showCancel ? `
-                        <button class="modal-cancel flex-1 px-5 py-2.5 rounded-lg border-2 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-sm">
+                        <button class="modal-btn-cancel">
                             ${cancelText}
                         </button>
                     ` : ''}
-                    <button class="modal-confirm flex-1 px-5 py-2.5 rounded-lg bg-primary text-white font-semibold hover:bg-primary/90 transition-colors text-sm">
+                    <button class="modal-btn-confirm">
                         ${confirmText}
                     </button>
                 </div>
@@ -73,8 +73,8 @@ export class Modal {
         }
 
         // Event listeners
-        const confirmBtn = modal.querySelector('.modal-confirm');
-        const cancelBtn = modal.querySelector('.modal-cancel');
+        const confirmBtn = modal.querySelector('.modal-btn-confirm');
+        const cancelBtn = modal.querySelector('.modal-btn-cancel');
 
         const close = () => {
             overlay.style.animation = 'fadeIn 0.2s ease reverse';

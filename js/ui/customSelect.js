@@ -12,17 +12,17 @@ export class CustomSelect {
         const selectedOption = this.options.find(opt => opt.value === this.selectedValue);
         
         this.container.innerHTML = `
-            <div class="custom-select-wrapper relative">
-                <button type="button" class="custom-select-trigger w-full rounded-lg border-slate-200 dark:border-primary/20 bg-slate-50 dark:bg-primary/5 p-3 text-sm text-left flex items-center justify-between hover:border-primary/40 transition-colors">
+            <div class="custom-select-wrapper">
+                <button type="button" class="custom-select-trigger">
                     <span class="custom-select-value">${selectedOption.label}</span>
-                    <i class="fas fa-chevron-down text-xs transition-transform duration-200"></i>
+                    <i class="fas fa-chevron-down custom-select-icon"></i>
                 </button>
-                <div class="custom-select-dropdown custom-scrollbar absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-primary/20 rounded-lg shadow-xl z-50 max-h-80 overflow-hidden hidden">
-                    <div class="overflow-y-auto max-h-80 custom-scrollbar">
+                <div class="custom-select-dropdown hidden">
+                    <div class="custom-select-options">
                         ${this.options.map((option, index) => `
-                            <div class="custom-select-option px-4 py-3 text-sm cursor-pointer hover:bg-primary/10 transition-colors ${option.value === this.selectedValue ? 'bg-primary/20 text-primary font-semibold' : 'text-slate-700 dark:text-slate-300'}" data-value="${option.value}">
-                                <div class="font-medium">${option.label}</div>
-                                ${option.description ? `<div class="text-xs opacity-70 mt-1">${option.description}</div>` : ''}
+                            <div class="custom-select-option ${option.value === this.selectedValue ? 'selected' : ''}" data-value="${option.value}">
+                                <div class="option-label">${option.label}</div>
+                                ${option.description ? `<div class="option-description">${option.description}</div>` : ''}
                             </div>
                         `).join('')}
                     </div>
@@ -35,7 +35,7 @@ export class CustomSelect {
         const trigger = this.container.querySelector('.custom-select-trigger');
         const dropdown = this.container.querySelector('.custom-select-dropdown');
         const options = this.container.querySelectorAll('.custom-select-option');
-        const icon = this.container.querySelector('.fa-chevron-down');
+        const icon = this.container.querySelector('.custom-select-icon');
 
         // Toggle dropdown
         trigger.addEventListener('click', (e) => {
@@ -78,7 +78,7 @@ export class CustomSelect {
 
     open() {
         const dropdown = this.container.querySelector('.custom-select-dropdown');
-        const icon = this.container.querySelector('.fa-chevron-down');
+        const icon = this.container.querySelector('.custom-select-icon');
         
         dropdown.classList.remove('hidden');
         icon.style.transform = 'rotate(180deg)';
@@ -87,7 +87,7 @@ export class CustomSelect {
 
     close() {
         const dropdown = this.container.querySelector('.custom-select-dropdown');
-        const icon = this.container.querySelector('.fa-chevron-down');
+        const icon = this.container.querySelector('.custom-select-icon');
         
         dropdown.classList.add('hidden');
         icon.style.transform = 'rotate(0deg)';
@@ -106,11 +106,9 @@ export class CustomSelect {
         const options = this.container.querySelectorAll('.custom-select-option');
         options.forEach(option => {
             if (option.dataset.value === value) {
-                option.classList.add('bg-primary/20', 'text-primary', 'font-semibold');
-                option.classList.remove('text-slate-700', 'dark:text-slate-300');
+                option.classList.add('selected');
             } else {
-                option.classList.remove('bg-primary/20', 'text-primary', 'font-semibold');
-                option.classList.add('text-slate-700', 'dark:text-slate-300');
+                option.classList.remove('selected');
             }
         });
 

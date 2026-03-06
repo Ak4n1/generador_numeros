@@ -60,18 +60,18 @@ export class ResultadosUI {
 
     crearCard(jugada, index) {
         const card = document.createElement('div');
-        card.className = 'p-6 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-primary/10 flex flex-col xl:flex-row xl:items-center justify-between gap-4 group hover:border-primary/40 transition-colors';
+        card.className = 'result-card';
         card.dataset.index = index;
         
         const contentDiv = document.createElement('div');
-        contentDiv.className = 'flex flex-col gap-1 flex-1';
+        contentDiv.className = 'result-content';
         
         const badge = document.createElement('span');
-        badge.className = 'text-xs font-bold text-primary tracking-widest uppercase';
+        badge.className = 'result-badge';
         badge.textContent = `${jugada.tipo} • ${jugada.fecha}`;
         
         const numerosDisplay = document.createElement('div');
-        numerosDisplay.className = 'flex flex-wrap gap-3 mt-2';
+        numerosDisplay.className = 'result-numbers';
         numerosDisplay.dataset.numeros = 'container';
         
         this.renderizarNumeros(numerosDisplay, jugada);
@@ -80,11 +80,11 @@ export class ResultadosUI {
         contentDiv.appendChild(numerosDisplay);
         
         const actions = document.createElement('div');
-        actions.className = 'flex items-center gap-2 flex-wrap';
+        actions.className = 'result-actions';
         
         // Botón Shuffle
         const btnShuffle = document.createElement('button');
-        btnShuffle.className = 'px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-bold hover:bg-primary/10 hover:text-primary transition-colors flex items-center gap-2';
+        btnShuffle.className = 'btn-shuffle';
         btnShuffle.innerHTML = '<i class="fas fa-random"></i>';
         btnShuffle.title = 'Mezclar números';
         btnShuffle.onclick = () => this.onShuffle(index);
@@ -92,24 +92,20 @@ export class ResultadosUI {
         // Botón Auto-Shuffle
         const btnAutoShuffle = document.createElement('button');
         const isAutoActive = this.autoShuffleStates.get(index);
-        btnAutoShuffle.className = `px-3 py-2 rounded-lg text-sm font-bold transition-colors flex items-center gap-2 ${
-            isAutoActive 
-                ? 'bg-red-500/80 text-white hover:bg-red-600/80' 
-                : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-primary/10 hover:text-primary'
-        }`;
+        btnAutoShuffle.className = `btn-auto-shuffle ${isAutoActive ? 'auto-shuffle-active' : ''}`;
         btnAutoShuffle.innerHTML = `<i class="fas fa-${isAutoActive ? 'stop' : 'play'}"></i>`;
         btnAutoShuffle.title = isAutoActive ? 'Detener mezcla automática' : 'Mezcla automática';
         btnAutoShuffle.onclick = () => this.onToggleAutoShuffle(index, btnAutoShuffle);
         
         // Botón Guardar
         const btnGuardar = document.createElement('button');
-        btnGuardar.className = 'px-4 py-2 rounded-lg bg-primary/10 text-primary text-sm font-bold hover:bg-primary hover:text-white transition-colors flex items-center gap-2';
+        btnGuardar.className = 'btn-save';
         btnGuardar.innerHTML = '<i class="fas fa-star"></i> Guardar';
         btnGuardar.onclick = () => this.onGuardar(jugada, index);
         
         // Botón Copiar
         const btnCopiar = document.createElement('button');
-        btnCopiar.className = 'p-2 rounded-lg text-slate-400 hover:text-primary transition-colors';
+        btnCopiar.className = 'btn-copy';
         btnCopiar.innerHTML = '<i class="fas fa-copy"></i>';
         btnCopiar.title = 'Copiar números';
         btnCopiar.onclick = () => this.copiarNumeros(jugada);
@@ -132,7 +128,7 @@ export class ResultadosUI {
             // Mostrar como bolillas
             jugada.numeros.forEach(num => {
                 const ball = document.createElement('div');
-                ball.className = 'h-12 w-12 rounded-full border-2 border-primary bg-primary/5 flex items-center justify-center text-lg font-black text-primary shadow-inner';
+                ball.className = 'number-ball';
                 ball.textContent = num;
                 container.appendChild(ball);
             });
@@ -140,7 +136,7 @@ export class ResultadosUI {
             // Quiniela simple
             jugada.numeros.forEach(num => {
                 const numeroDiv = document.createElement('div');
-                numeroDiv.className = 'px-4 py-2 rounded-lg bg-primary/10 border border-primary/20 text-primary font-black';
+                numeroDiv.className = 'numero-quiniela';
                 numeroDiv.textContent = num;
                 container.appendChild(numeroDiv);
             });
@@ -189,8 +185,8 @@ export class ResultadosUI {
         }
         
         this.container.innerHTML = `
-            <div class="text-center py-12 text-slate-400 col-span-full">
-                <i class="fas fa-dice text-6xl mb-4 block opacity-30"></i>
+            <div class="empty-state">
+                <i class="fas fa-dice empty-icon"></i>
                 <p>Genera números para ver los resultados aquí</p>
             </div>
         `;
@@ -256,26 +252,26 @@ export class GuardadosUI {
 
     crearCard(jugada) {
         const card = document.createElement('div');
-        card.className = 'p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-primary/10 relative group hover:border-primary/40 transition-colors';
+        card.className = 'guardado-card';
         
         const header = document.createElement('div');
-        header.className = 'flex items-start justify-between gap-2 mb-3';
+        header.className = 'guardado-header';
         
         const headerText = document.createElement('div');
-        headerText.className = 'flex-1';
+        headerText.className = 'guardado-header-text';
         
         const tipo = document.createElement('span');
-        tipo.className = 'text-[10px] font-bold text-slate-400 uppercase block';
+        tipo.className = 'guardado-tipo';
         tipo.textContent = `${jugada.tipo} • ${jugada.fecha}`;
         
         headerText.appendChild(tipo);
         
         const actions = document.createElement('div');
-        actions.className = 'flex gap-2';
+        actions.className = 'guardado-actions';
         
         const btnCopiar = document.createElement('button');
-        btnCopiar.className = 'p-1.5 rounded-lg text-slate-400 hover:text-primary hover:bg-primary/10 transition-colors';
-        btnCopiar.innerHTML = '<i class="fas fa-copy text-sm"></i>';
+        btnCopiar.className = 'guardado-btn-copy';
+        btnCopiar.innerHTML = '<i class="fas fa-copy"></i>';
         btnCopiar.title = 'Copiar números';
         btnCopiar.onclick = (e) => {
             e.stopPropagation();
@@ -283,8 +279,8 @@ export class GuardadosUI {
         };
         
         const btnEliminar = document.createElement('button');
-        btnEliminar.className = 'p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-500/10 transition-colors';
-        btnEliminar.innerHTML = '<i class="fas fa-trash text-sm"></i>';
+        btnEliminar.className = 'guardado-btn-delete';
+        btnEliminar.innerHTML = '<i class="fas fa-trash"></i>';
         btnEliminar.title = 'Eliminar';
         btnEliminar.onclick = (e) => {
             e.stopPropagation();
@@ -298,20 +294,20 @@ export class GuardadosUI {
         header.appendChild(actions);
         
         const numerosDiv = document.createElement('div');
-        numerosDiv.className = 'flex flex-wrap gap-1.5';
+        numerosDiv.className = 'guardado-numeros';
         
         if (jugada.tipo.includes('6 Números')) {
             // Mostrar como mini bolillas
             jugada.numeros.forEach(num => {
                 const ball = document.createElement('div');
-                ball.className = 'h-8 w-8 rounded-full border border-primary bg-primary/5 flex items-center justify-center text-xs font-black text-primary';
+                ball.className = 'guardado-ball';
                 ball.textContent = num;
                 numerosDiv.appendChild(ball);
             });
         } else {
             // Mostrar como texto compacto
             const span = document.createElement('span');
-            span.className = 'text-sm font-black text-primary';
+            span.className = 'guardado-text';
             span.textContent = jugada.numeros.join(', ');
             numerosDiv.appendChild(span);
         }
@@ -352,9 +348,9 @@ export class GuardadosUI {
 
     mostrarVacio() {
         this.container.innerHTML = `
-            <div class="text-center py-8 text-slate-400 col-span-full">
-                <i class="far fa-star text-4xl mb-2 block opacity-30"></i>
-                <p class="text-sm">No hay números guardados todavía</p>
+            <div class="empty-state">
+                <i class="far fa-star empty-icon"></i>
+                <p>No hay números guardados todavía</p>
             </div>
         `;
     }

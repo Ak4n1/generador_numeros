@@ -417,7 +417,7 @@ class App {
         
         if (!filtros || !filtros.rangos) {
             // Sin filtros - estado normal
-            btn.className = 'mt-2 px-4 py-2 rounded-lg border-2 border-primary/30 bg-primary/5 text-primary hover:bg-primary/10 transition-colors text-sm font-semibold flex items-center justify-center gap-2';
+            btn.className = 'btn-filtros-avanzados';
             btn.innerHTML = `
                 <i class="fas fa-sliders-h"></i>
                 Filtros Avanzados
@@ -439,15 +439,15 @@ class App {
         
         if (numerosConfigurados > 0) {
             // Con filtros activos - estado destacado
-            btn.className = 'mt-2 px-4 py-2 rounded-lg border-2 border-primary bg-primary text-white hover:bg-primary/90 transition-colors text-sm font-semibold flex items-center justify-center gap-2 shadow-lg shadow-primary/30';
+            btn.className = 'btn-filtros-avanzados filtros-activos';
             btn.innerHTML = `
                 <i class="fas fa-sliders-h"></i>
                 Filtros Avanzados
-                <span class="ml-1 px-2 py-0.5 rounded-full bg-white/20 text-xs font-bold">${numerosConfigurados}</span>
+                <span class="filtros-badge">${numerosConfigurados}</span>
             `;
         } else {
             // Sin filtros personalizados - estado normal
-            btn.className = 'mt-2 px-4 py-2 rounded-lg border-2 border-primary/30 bg-primary/5 text-primary hover:bg-primary/10 transition-colors text-sm font-semibold flex items-center justify-center gap-2';
+            btn.className = 'btn-filtros-avanzados';
             btn.innerHTML = `
                 <i class="fas fa-sliders-h"></i>
                 Filtros Avanzados
@@ -506,17 +506,19 @@ class App {
         const numerosFijos = this.configuracionController.getNumerosFijos();
         
         if (numerosFijos.length === 0) {
-            container.innerHTML = '<span class="text-xs text-slate-400">Sin números fijos</span>';
+            container.innerHTML = '<span class="numeros-fijos-empty">Sin números fijos</span>';
             return;
         }
 
         container.innerHTML = '';
         numerosFijos.forEach(num => {
             const tag = document.createElement('span');
-            tag.className = 'inline-flex items-center gap-1 px-2 py-1 rounded bg-primary text-white text-xs font-bold';
+            tag.className = 'numero-fijo-chip';
             tag.innerHTML = `
                 ${num}
-                <i class="fas fa-times text-[10px] cursor-pointer hover:text-red-200" onclick="app.eliminarNumeroFijo(${num})"></i>
+                <button class="remove-btn" onclick="app.eliminarNumeroFijo(${num})">
+                    <i class="fas fa-times"></i>
+                </button>
             `;
             container.appendChild(tag);
         });
@@ -537,9 +539,9 @@ class App {
         Object.keys(botones).forEach(key => {
             const btn = botones[key];
             if (key === filtro) {
-                btn.className = 'p-2 text-xs font-bold rounded-lg border border-primary/20 bg-primary/10 text-primary';
+                btn.className = 'filtro-btn filtro-active';
             } else {
-                btn.className = 'p-2 text-xs font-medium rounded-lg border border-slate-200 dark:border-primary/10 hover:bg-primary/5';
+                btn.className = 'filtro-btn';
             }
         });
     }
@@ -630,53 +632,53 @@ class App {
                 .join(' ');
             
             const mensajeDetallado = `
-                <div class="text-center">
-                    <div class="text-4xl mb-4">${icono}</div>
-                    <div class="font-bold text-xl mb-2 text-primary">Algoritmo: ${nombreAlgoritmo}</div>
-                    <div class="text-sm text-slate-600 dark:text-slate-400 mb-4">${descripcion}</div>
+                <div class="modal-content-algoritmo">
+                    <div class="modal-algoritmo-icon">${icono}</div>
+                    <div class="modal-algoritmo-title">Algoritmo: ${nombreAlgoritmo}</div>
+                    <div class="modal-algoritmo-description">${descripcion}</div>
                     
                     <!-- Números generados -->
-                    <div class="bg-gradient-to-r from-primary/10 to-purple-500/10 rounded-lg p-4 mb-4 border border-primary/20">
-                        <div class="flex items-center justify-between mb-2">
-                            <div class="text-sm text-primary font-semibold">🎲 Números generados</div>
-                            <button id="btn-regenerar-modal" class="px-3 py-1 text-xs bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-1" title="Regenerar con el mismo algoritmo">
-                                <i class="fas fa-redo text-xs"></i>
+                    <div class="modal-numeros-section">
+                        <div class="modal-numeros-header">
+                            <div class="modal-numeros-title">🎲 Números generados</div>
+                            <button id="btn-regenerar-modal" class="modal-btn-regenerar" title="Regenerar con el mismo algoritmo">
+                                <i class="fas fa-redo"></i>
                                 Regenerar
                             </button>
                         </div>
-                        <div id="numeros-generados-modal" class="flex justify-center gap-2 flex-wrap">
+                        <div id="numeros-generados-modal" class="modal-numeros-display">
                             ${resultado.numeros.map(num => 
-                                `<span class="inline-flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full text-sm font-bold">${num}</span>`
+                                `<span class="modal-numero">${num}</span>`
                             ).join('')}
                         </div>
                     </div>
                     
-                    <div class="bg-primary/10 rounded-lg p-4 mb-4">
-                        <div class="flex items-center justify-between mb-1">
-                            <div class="text-sm text-primary font-semibold"><i class="fas fa-chart-bar mr-2"></i>Datos analizados</div>
-                            <a href="quini6.html" target="_blank" class="text-primary hover:text-primary/80 transition-colors" title="Ver datos históricos de Quini 6">
-                                <i class="fas fa-external-link-alt text-sm"></i>
+                    <div class="modal-datos-section">
+                        <div class="modal-datos-header">
+                            <div class="modal-datos-title"><i class="fas fa-chart-bar"></i> Datos analizados</div>
+                            <a href="quini6.html" target="_blank" class="modal-datos-link" title="Ver datos históricos de Quini 6">
+                                <i class="fas fa-external-link-alt"></i>
                             </a>
                         </div>
-                        <div class="text-sm text-slate-600 dark:text-slate-400">${totalSorteos} sorteos históricos</div>
+                        <div class="modal-datos-text">${totalSorteos} sorteos históricos</div>
                     </div>
                     
                     <!-- Advertencia importante -->
-                    <div class="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-700/50 rounded-lg p-3 mb-3">
-                        <div class="flex items-start gap-2">
-                            <i class="fas fa-info-circle text-orange-600 dark:text-orange-400 mt-0.5 text-sm"></i>
-                            <div class="text-xs text-orange-800 dark:text-orange-200 text-left">
-                                <div class="font-semibold mb-1">Importante:</div>
+                    <div class="modal-warning-section">
+                        <div class="modal-warning-content">
+                            <i class="fas fa-info-circle modal-warning-icon"></i>
+                            <div class="modal-warning-text">
+                                <div class="modal-warning-title">Importante:</div>
                                 <div>Los algoritmos analizan patrones históricos. Cada sorteo es independiente y aleatorio.</div>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="text-sm text-green-600 dark:text-green-400 mb-3 font-medium">
+                    <div class="modal-success-text">
                         Números generados exitosamente
                     </div>
-                    <div class="text-xs text-slate-400 border-t border-slate-200 dark:border-slate-600 pt-3">
-                        <i class="fas fa-graduation-cap mr-1"></i>${autor}
+                    <div class="modal-author-section">
+                        <i class="fas fa-graduation-cap"></i> ${autor}
                     </div>
                 </div>
             `;
@@ -705,7 +707,7 @@ class App {
                             
                             if (numerosContainer) {
                                 numerosContainer.innerHTML = nuevoResultado.numeros.map(num => 
-                                    `<span class="inline-flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full text-sm font-bold">${num}</span>`
+                                    `<span class="modal-numero">${num}</span>`
                                 ).join('');
                             }
                             
@@ -725,7 +727,7 @@ class App {
                         } finally {
                             // Restaurar botón
                             btnRegenerar.disabled = false;
-                            btnRegenerar.innerHTML = '<i class="fas fa-redo text-xs"></i> Regenerar';
+                            btnRegenerar.innerHTML = '<i class="fas fa-redo"></i> Regenerar';
                         }
                     });
                 }
@@ -794,10 +796,9 @@ class App {
             console.log('🛑 [DEBUG] Deteniendo auto-generador');
             // Detener
             this.autoGeneradorService.stop();
-            icon.className = 'fas fa-play text-2xl';
+            icon.className = 'fas fa-play auto-icon';
             text.textContent = 'AUTO';
-            btn.classList.remove('bg-red-500/80', 'hover:bg-red-600/80');
-            btn.classList.add('bg-white/20', 'hover:bg-white/30');
+            btn.classList.remove('auto-active');
         } else {
             console.log('▶️ [DEBUG] Iniciando auto-generador');
             // Iniciar
@@ -818,17 +819,15 @@ class App {
                     this.autoGeneradorService.stop();
                     UIHelper.mostrarError(error.message);
                     // Restaurar botón
-                    icon.className = 'fas fa-play text-2xl';
+                    icon.className = 'fas fa-play auto-icon';
                     text.textContent = 'AUTO';
-                    btn.classList.remove('bg-red-500/80', 'hover:bg-red-600/80');
-                    btn.classList.add('bg-white/20', 'hover:bg-white/30');
+                    btn.classList.remove('auto-active');
                 }
             });
             
-            icon.className = 'fas fa-stop text-2xl';
+            icon.className = 'fas fa-stop auto-icon';
             text.textContent = 'STOP';
-            btn.classList.remove('bg-white/20', 'hover:bg-white/30');
-            btn.classList.add('bg-red-500/80', 'hover:bg-red-600/80');
+            btn.classList.add('auto-active');
         }
     }
 

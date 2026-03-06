@@ -19,57 +19,57 @@ export class FiltrosAvanzadosModal {
 
         // Crear overlay
         const overlay = document.createElement('div');
-        overlay.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4';
+        overlay.className = 'modal-overlay';
         overlay.style.animation = 'fadeIn 0.2s ease';
 
         // Crear modal
         const modal = document.createElement('div');
-        modal.className = 'bg-white dark:bg-slate-900 rounded-xl shadow-2xl max-w-4xl w-full border border-slate-200 dark:border-primary/20 max-h-[90vh] overflow-hidden flex flex-col';
+        modal.className = 'modal-large';
         modal.style.animation = 'slideUp 0.3s ease';
 
         modal.innerHTML = `
-            <div class="sticky top-0 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-primary/20 p-6 z-10">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <div class="modal-header-advanced">
+                <div class="modal-header-content">
+                    <div class="modal-header-info">
+                        <div class="modal-header-icon">
                             <i class="fas fa-sliders-h text-primary"></i>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-slate-900 dark:text-white">Filtros Avanzados</h3>
-                            <p class="text-sm text-slate-500 dark:text-slate-400">Configura el rango de cada número</p>
+                            <h3 class="modal-title-advanced">Filtros Avanzados</h3>
+                            <p class="modal-subtitle">Configura el rango de cada número</p>
                         </div>
                     </div>
-                    <button class="modal-close p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-                        <i class="fas fa-times text-slate-400"></i>
+                    <button class="modal-close">
+                        <i class="fas fa-times"></i>
                     </button>
                 </div>
             </div>
 
-            <div class="p-6 space-y-6 overflow-y-auto custom-scrollbar flex-1">
+            <div class="modal-body-advanced custom-scrollbar">
                 <!-- Info -->
-                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-                    <div class="flex gap-3">
-                        <i class="fas fa-info-circle text-blue-500 mt-0.5"></i>
-                        <div class="text-sm text-blue-900 dark:text-blue-100">
-                            <p class="font-semibold mb-1">¿Cómo funciona?</p>
+                <div class="info-box">
+                    <div class="info-box-content">
+                        <i class="fas fa-info-circle info-box-icon"></i>
+                        <div class="info-box-text">
+                            <p class="info-box-title">¿Cómo funciona?</p>
                             <p>Define el rango de cada uno de los 6 números. Por ejemplo, el primer número puede salir entre 0-10, el segundo entre 11-20, etc.</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Botones de acción rápida -->
-                <div class="space-y-3">
-                    <h4 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <div class="presets-section">
+                    <h4 class="presets-title">
                         <i class="fas fa-magic text-primary"></i>
                         Presets
                     </h4>
                     
-                    <div class="grid grid-cols-2 gap-3">
-                        <button class="preset-btn px-4 py-2 rounded-lg border-2 border-slate-200 dark:border-slate-700 hover:border-primary hover:bg-primary/5 transition-colors text-sm font-medium" data-preset="reset">
+                    <div class="presets-grid">
+                        <button class="preset-btn" data-preset="reset">
                             <i class="fas fa-undo text-xs mr-2"></i>
                             Resetear Todo
                         </button>
-                        <button class="preset-btn px-4 py-2 rounded-lg border-2 border-slate-200 dark:border-slate-700 hover:border-primary hover:bg-primary/5 transition-colors text-sm font-medium" data-preset="distribuido">
+                        <button class="preset-btn" data-preset="distribuido">
                             <i class="fas fa-chart-bar text-xs mr-2"></i>
                             Distribuido
                         </button>
@@ -77,54 +77,54 @@ export class FiltrosAvanzadosModal {
                 </div>
 
                 <!-- Rangos de números -->
-                <div class="space-y-4">
-                    <h4 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <div class="rangos-section">
+                    <h4 class="rangos-title">
                         <i class="fas fa-hashtag text-primary"></i>
                         Rangos por Número
                     </h4>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="rangos-grid">
                         ${defaults.rangos.map((rango, index) => `
-                            <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 border border-slate-200 dark:border-slate-700">
-                                <div class="flex items-center justify-between mb-3">
-                                    <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                            <div class="numero-card">
+                                <div class="numero-card-header">
+                                    <label class="numero-label">
                                         Número ${index + 1}
                                     </label>
-                                    <button class="reset-numero-btn w-7 h-7 flex items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors text-slate-500 dark:text-slate-400" data-index="${index}" title="Resetear este número">
+                                    <button class="reset-numero-btn" data-index="${index}" title="Resetear este número">
                                         <i class="fas fa-undo text-xs"></i>
                                     </button>
                                 </div>
                                 
                                 <!-- Toggle Número Fijo -->
-                                <div class="mb-3">
-                                    <label class="relative inline-flex items-center cursor-pointer">
+                                <div class="numero-fijo-toggle-container">
+                                    <label class="toggle-label">
                                         <input 
                                             type="checkbox" 
-                                            class="numero-fijo-toggle sr-only peer" 
+                                            class="numero-fijo-toggle toggle-input" 
                                             ${rango.numeroFijo !== null && rango.numeroFijo !== undefined ? 'checked' : ''}
                                             data-index="${index}"
                                         />
-                                        <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-                                        <span class="ms-3 text-sm font-medium text-slate-700 dark:text-slate-300">Número fijo</span>
+                                        <div class="toggle-slider"></div>
+                                        <span class="toggle-text">Número fijo</span>
                                     </label>
                                 </div>
                                 
                                 <!-- Input Número Fijo -->
                                 <div class="numero-fijo-container ${rango.numeroFijo !== null && rango.numeroFijo !== undefined ? '' : 'hidden'}" data-index="${index}">
-                                    <label class="text-xs text-slate-500 dark:text-slate-400 mb-2 block">Número fijo:</label>
-                                    <div class="flex items-center gap-1 mb-3">
-                                        <button class="decrement-btn w-8 h-9 flex items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors text-slate-700 dark:text-slate-300" data-target="numero-fijo-input" data-index="${index}">
+                                    <label class="numero-fijo-label">Número fijo:</label>
+                                    <div class="numero-fijo-input-group">
+                                        <button class="decrement-btn" data-target="numero-fijo-input" data-index="${index}">
                                             <i class="fas fa-minus text-xs"></i>
                                         </button>
                                         <input 
                                             type="number" 
-                                            class="numero-fijo-input flex-1 px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-center focus:ring-2 focus:ring-primary focus:border-primary outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                            class="numero-fijo-input numero-input"
                                             min="0" 
                                             max="45" 
                                             value="${rango.numeroFijo !== null && rango.numeroFijo !== undefined ? rango.numeroFijo : 0}"
                                             data-index="${index}"
                                         />
-                                        <button class="increment-btn w-8 h-9 flex items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors text-slate-700 dark:text-slate-300" data-target="numero-fijo-input" data-index="${index}">
+                                        <button class="increment-btn" data-target="numero-fijo-input" data-index="${index}">
                                             <i class="fas fa-plus text-xs"></i>
                                         </button>
                                     </div>
@@ -132,85 +132,85 @@ export class FiltrosAvanzadosModal {
                                 
                                 <!-- Rangos y Filtros (ocultos si número fijo está activo) -->
                                 <div class="rangos-filtros-container ${rango.numeroFijo !== null && rango.numeroFijo !== undefined ? 'hidden' : ''}" data-index="${index}">
-                                <div class="flex items-center gap-3 mb-3">
-                                    <div class="flex-1">
-                                        <label class="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Desde</label>
-                                        <div class="flex items-center gap-1">
-                                            <button class="decrement-btn w-8 h-9 flex items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors text-slate-700 dark:text-slate-300" data-target="rango-min" data-index="${index}">
+                                    <div class="rango-inputs-group">
+                                        <div class="rango-input-container">
+                                            <label class="rango-input-label">Desde</label>
+                                            <div class="numero-fijo-input-group">
+                                                <button class="decrement-btn" data-target="rango-min" data-index="${index}">
+                                                    <i class="fas fa-minus text-xs"></i>
+                                                </button>
+                                                <input 
+                                                    type="number" 
+                                                    class="rango-min numero-input"
+                                                    min="0" 
+                                                    max="45" 
+                                                    value="${rango.min}"
+                                                    data-index="${index}"
+                                                />
+                                                <button class="increment-btn" data-target="rango-min" data-index="${index}">
+                                                    <i class="fas fa-plus text-xs"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <span class="rango-separator">-</span>
+                                        <div class="rango-input-container">
+                                            <label class="rango-input-label">Hasta</label>
+                                            <div class="numero-fijo-input-group">
+                                                <button class="decrement-btn" data-target="rango-max" data-index="${index}">
+                                                    <i class="fas fa-minus text-xs"></i>
+                                                </button>
+                                                <input 
+                                                    type="number" 
+                                                    class="rango-max numero-input"
+                                                    min="0" 
+                                                    max="45" 
+                                                    value="${rango.max}"
+                                                    data-index="${index}"
+                                                />
+                                                <button class="increment-btn" data-target="rango-max" data-index="${index}">
+                                                    <i class="fas fa-plus text-xs"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="filtros-grid">
+                                        <button class="filtro-btn-advanced ${rango.filtro === 'auto' ? 'active' : ''}" data-index="${index}" data-filtro="auto">
+                                            Auto
+                                        </button>
+                                        <button class="filtro-btn-advanced ${rango.filtro === 'pares' ? 'active' : ''}" data-index="${index}" data-filtro="pares">
+                                            Pares
+                                        </button>
+                                        <button class="filtro-btn-advanced ${rango.filtro === 'impares' ? 'active' : ''}" data-index="${index}" data-filtro="impares">
+                                            Impares
+                                        </button>
+                                        <button class="filtro-btn-advanced ${rango.filtro === 'multiplos' ? 'active' : ''}" data-index="${index}" data-filtro="multiplos">
+                                            Múltiplos
+                                        </button>
+                                    </div>
+                                    <div class="multiplo-input-container ${rango.filtro === 'multiplos' ? '' : 'hidden'}" data-index="${index}">
+                                        <label class="multiplo-label">Múltiplos de:</label>
+                                        <div class="numero-fijo-input-group">
+                                            <button class="decrement-btn" data-target="multiplo-input" data-index="${index}">
                                                 <i class="fas fa-minus text-xs"></i>
                                             </button>
                                             <input 
                                                 type="number" 
-                                                class="rango-min flex-1 px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-center focus:ring-2 focus:ring-primary focus:border-primary outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                                                min="0" 
+                                                class="multiplo-input numero-input"
+                                                min="2" 
                                                 max="45" 
-                                                value="${rango.min}"
+                                                value="${rango.multiplo || 3}"
+                                                placeholder="Ej: 3, 5, 7..."
                                                 data-index="${index}"
                                             />
-                                            <button class="increment-btn w-8 h-9 flex items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors text-slate-700 dark:text-slate-300" data-target="rango-min" data-index="${index}">
+                                            <button class="increment-btn" data-target="multiplo-input" data-index="${index}">
                                                 <i class="fas fa-plus text-xs"></i>
                                             </button>
                                         </div>
                                     </div>
-                                    <span class="text-slate-400 mt-5">-</span>
-                                    <div class="flex-1">
-                                        <label class="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Hasta</label>
-                                        <div class="flex items-center gap-1">
-                                            <button class="decrement-btn w-8 h-9 flex items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors text-slate-700 dark:text-slate-300" data-target="rango-max" data-index="${index}">
-                                                <i class="fas fa-minus text-xs"></i>
-                                            </button>
-                                            <input 
-                                                type="number" 
-                                                class="rango-max flex-1 px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-center focus:ring-2 focus:ring-primary focus:border-primary outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                                                min="0" 
-                                                max="45" 
-                                                value="${rango.max}"
-                                                data-index="${index}"
-                                            />
-                                            <button class="increment-btn w-8 h-9 flex items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors text-slate-700 dark:text-slate-300" data-target="rango-max" data-index="${index}">
-                                                <i class="fas fa-plus text-xs"></i>
-                                            </button>
-                                        </div>
+                                    <div class="disponibles-indicator" data-index="${index}">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span class="disponibles-text">Calculando...</span>
                                     </div>
-                                </div>
-                                <div class="grid grid-cols-2 gap-1 mb-2">
-                                    <button class="filtro-btn text-xs py-1.5 rounded border ${rango.filtro === 'auto' ? 'border-primary bg-primary/10 text-primary font-semibold' : 'border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-400'}" data-index="${index}" data-filtro="auto">
-                                        Auto
-                                    </button>
-                                    <button class="filtro-btn text-xs py-1.5 rounded border ${rango.filtro === 'pares' ? 'border-primary bg-primary/10 text-primary font-semibold' : 'border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-400'}" data-index="${index}" data-filtro="pares">
-                                        Pares
-                                    </button>
-                                    <button class="filtro-btn text-xs py-1.5 rounded border ${rango.filtro === 'impares' ? 'border-primary bg-primary/10 text-primary font-semibold' : 'border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-400'}" data-index="${index}" data-filtro="impares">
-                                        Impares
-                                    </button>
-                                    <button class="filtro-btn text-xs py-1.5 rounded border ${rango.filtro === 'multiplos' ? 'border-primary bg-primary/10 text-primary font-semibold' : 'border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-400'}" data-index="${index}" data-filtro="multiplos">
-                                        Múltiplos
-                                    </button>
-                                </div>
-                                <div class="multiplo-input-container ${rango.filtro === 'multiplos' ? '' : 'hidden'}" data-index="${index}">
-                                    <label class="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Múltiplos de:</label>
-                                    <div class="flex items-center gap-1">
-                                        <button class="decrement-btn w-8 h-9 flex items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors text-slate-700 dark:text-slate-300" data-target="multiplo-input" data-index="${index}">
-                                            <i class="fas fa-minus text-xs"></i>
-                                        </button>
-                                        <input 
-                                            type="number" 
-                                            class="multiplo-input flex-1 px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-center focus:ring-2 focus:ring-primary focus:border-primary outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                                            min="2" 
-                                            max="45" 
-                                            value="${rango.multiplo || 3}"
-                                            placeholder="Ej: 3, 5, 7..."
-                                            data-index="${index}"
-                                        />
-                                        <button class="increment-btn w-8 h-9 flex items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors text-slate-700 dark:text-slate-300" data-target="multiplo-input" data-index="${index}">
-                                            <i class="fas fa-plus text-xs"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="disponibles-indicator mt-2 text-xs px-2 py-1 rounded" data-index="${index}">
-                                    <i class="fas fa-check-circle mr-1"></i>
-                                    <span class="disponibles-text">Calculando...</span>
-                                </div>
                                 </div>
                             </div>
                         `).join('')}
@@ -218,11 +218,11 @@ export class FiltrosAvanzadosModal {
                 </div>
             </div>
 
-            <div class="sticky bottom-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-primary/20 p-6 flex gap-3">
-                <button class="modal-cancel flex-1 px-6 py-3 rounded-lg border-2 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <div class="modal-footer-advanced">
+                <button class="modal-btn-advanced modal-btn-cancel-advanced">
                     Cancelar
                 </button>
-                <button class="modal-confirm flex-1 px-6 py-3 rounded-lg bg-primary text-white font-semibold hover:bg-primary/90 transition-colors">
+                <button class="modal-btn-advanced modal-btn-confirm-advanced">
                     Aplicar Filtros
                 </button>
             </div>
@@ -245,8 +245,8 @@ export class FiltrosAvanzadosModal {
             // Encontrar filtro activo
             let filtroActivo = 'auto';
             let multiplo = 3;
-            modal.querySelectorAll(`.filtro-btn[data-index="${index}"]`).forEach(btn => {
-                if (btn.classList.contains('border-primary')) {
+            modal.querySelectorAll(`.filtro-btn-advanced[data-index="${index}"]`).forEach(btn => {
+                if (btn.classList.contains('active')) {
                     filtroActivo = btn.dataset.filtro;
                 }
             });
@@ -273,16 +273,16 @@ export class FiltrosAvanzadosModal {
             // Actualizar indicador
             const count = disponibles.length;
             if (count === 0) {
-                indicator.className = 'disponibles-indicator mt-2 text-xs px-2 py-1 rounded bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-300 dark:border-red-800';
-                indicatorIcon.className = 'fas fa-exclamation-triangle mr-1';
+                indicator.className = 'disponibles-indicator error';
+                indicatorIcon.className = 'fas fa-exclamation-triangle';
                 indicatorText.textContent = 'Sin números disponibles';
             } else if (count < 3) {
-                indicator.className = 'disponibles-indicator mt-2 text-xs px-2 py-1 rounded bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border border-yellow-300 dark:border-yellow-800';
-                indicatorIcon.className = 'fas fa-exclamation-circle mr-1';
+                indicator.className = 'disponibles-indicator warning';
+                indicatorIcon.className = 'fas fa-exclamation-circle';
                 indicatorText.textContent = `Solo ${count} número${count > 1 ? 's' : ''} disponible${count > 1 ? 's' : ''}`;
             } else {
-                indicator.className = 'disponibles-indicator mt-2 text-xs px-2 py-1 rounded bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-300 dark:border-green-800';
-                indicatorIcon.className = 'fas fa-check-circle mr-1';
+                indicator.className = 'disponibles-indicator success';
+                indicatorIcon.className = 'fas fa-check-circle';
                 indicatorText.textContent = `${count} números disponibles`;
             }
         };
@@ -293,8 +293,8 @@ export class FiltrosAvanzadosModal {
         }
 
         // Event listeners
-        const confirmBtn = modal.querySelector('.modal-confirm');
-        const cancelBtn = modal.querySelector('.modal-cancel');
+        const confirmBtn = modal.querySelector('.modal-btn-confirm-advanced');
+        const cancelBtn = modal.querySelector('.modal-btn-cancel-advanced');
         const closeBtn = modal.querySelector('.modal-close');
         const presetBtns = modal.querySelectorAll('.preset-btn');
 
@@ -307,7 +307,7 @@ export class FiltrosAvanzadosModal {
             const rangos = [];
             const minInputs = modal.querySelectorAll('.rango-min');
             const maxInputs = modal.querySelectorAll('.rango-max');
-            const filtroBtns = modal.querySelectorAll('.filtro-btn');
+            const filtroBtns = modal.querySelectorAll('.filtro-btn-advanced');
             const multiploInputs = modal.querySelectorAll('.multiplo-input');
             const numeroFijoToggles = modal.querySelectorAll('.numero-fijo-toggle');
             const numeroFijoInputs = modal.querySelectorAll('.numero-fijo-input');
@@ -334,7 +334,7 @@ export class FiltrosAvanzadosModal {
                     // Guardar configuración de rango y filtros
                     let filtroActivo = 'auto';
                     filtroBtns.forEach(btn => {
-                        if (parseInt(btn.dataset.index) === i && btn.classList.contains('border-primary')) {
+                        if (parseInt(btn.dataset.index) === i && btn.classList.contains('active')) {
                             filtroActivo = btn.dataset.filtro;
                         }
                     });
@@ -423,21 +423,19 @@ export class FiltrosAvanzadosModal {
         closeBtn.addEventListener('click', close);
 
         // Event listeners para botones de filtro
-        const filtroBtns = modal.querySelectorAll('.filtro-btn');
+        const filtroBtns = modal.querySelectorAll('.filtro-btn-advanced');
         filtroBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 const index = btn.dataset.index;
                 const filtro = btn.dataset.filtro;
                 
                 // Desactivar todos los botones de este grupo
-                modal.querySelectorAll(`.filtro-btn[data-index="${index}"]`).forEach(b => {
-                    b.classList.remove('border-primary', 'bg-primary/10', 'text-primary', 'font-semibold');
-                    b.classList.add('border-slate-300', 'dark:border-slate-600', 'text-slate-600', 'dark:text-slate-400');
+                modal.querySelectorAll(`.filtro-btn-advanced[data-index="${index}"]`).forEach(b => {
+                    b.classList.remove('active');
                 });
                 
                 // Activar el botón clickeado
-                btn.classList.remove('border-slate-300', 'dark:border-slate-600', 'text-slate-600', 'dark:text-slate-400');
-                btn.classList.add('border-primary', 'bg-primary/10', 'text-primary', 'font-semibold');
+                btn.classList.add('active');
                 
                 // Mostrar/ocultar input de múltiplos
                 const multiploContainer = modal.querySelector(`.multiplo-input-container[data-index="${index}"]`);
@@ -550,13 +548,11 @@ export class FiltrosAvanzadosModal {
                 maxInput.value = 45;
                 
                 // Resetear filtro a auto
-                modal.querySelectorAll(`.filtro-btn[data-index="${index}"]`).forEach(b => {
+                modal.querySelectorAll(`.filtro-btn-advanced[data-index="${index}"]`).forEach(b => {
                     if (b.dataset.filtro === 'auto') {
-                        b.classList.add('border-primary', 'bg-primary/10', 'text-primary', 'font-semibold');
-                        b.classList.remove('border-slate-300', 'dark:border-slate-600', 'text-slate-600', 'dark:text-slate-400');
+                        b.classList.add('active');
                     } else {
-                        b.classList.remove('border-primary', 'bg-primary/10', 'text-primary', 'font-semibold');
-                        b.classList.add('border-slate-300', 'dark:border-slate-600', 'text-slate-600', 'dark:text-slate-400');
+                        b.classList.remove('active');
                     }
                 });
                 
@@ -595,11 +591,9 @@ export class FiltrosAvanzadosModal {
                     // Resetear filtros a auto
                     filtroBtns.forEach(btn => {
                         if (btn.dataset.filtro === 'auto') {
-                            btn.classList.add('border-primary', 'bg-primary/10', 'text-primary', 'font-semibold');
-                            btn.classList.remove('border-slate-300', 'dark:border-slate-600', 'text-slate-600', 'dark:text-slate-400');
+                            btn.classList.add('active');
                         } else {
-                            btn.classList.remove('border-primary', 'bg-primary/10', 'text-primary', 'font-semibold');
-                            btn.classList.add('border-slate-300', 'dark:border-slate-600', 'text-slate-600', 'dark:text-slate-400');
+                            btn.classList.remove('active');
                         }
                     });
                     

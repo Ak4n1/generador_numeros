@@ -151,17 +151,14 @@ export class ResultadosUI {
 
     onGuardar(jugada, index) {
         // Este método será sobrescrito desde main.js
-        console.log('Guardar jugada:', jugada);
     }
 
     onShuffle(index) {
         // Este método será sobrescrito desde main.js
-        console.log('Shuffle jugada:', index);
     }
 
     onToggleAutoShuffle(index, button) {
         // Este método será sobrescrito desde main.js
-        console.log('Toggle auto-shuffle:', index);
     }
 
     updateAutoShuffleButton(index, isActive) {
@@ -315,6 +312,5 @@ export class GuardadosUI {
 
     onEliminar(id) {
         // Este método será sobrescrito desde main.js
-        console.log('Eliminar jugada:', id);
     }
 }

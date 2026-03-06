@@ -22,7 +22,6 @@ export class GeneradorInteligenteService {
                 return; // Cache válido
             }
 
-            console.log('🔄 [GENERADOR INTELIGENTE] Cargando datos históricos...');
             
             const response = await fetch(`${this.baseURL}/api/quini6/historial?limite=100`);
             
@@ -32,7 +31,6 @@ export class GeneradorInteligenteService {
 
             const data = await response.json();
             
-            console.log('🔍 [DEBUG] Respuesta completa de la API:', data);
             
             if (!data.success) {
                 throw new Error(data.error || 'Error desconocido');
@@ -47,7 +45,6 @@ export class GeneradorInteligenteService {
             // Convertir los datos al formato esperado
             this.datosHistoricos = [];
             data.data.forEach(sorteo => {
-                console.log('🔍 [DEBUG] Procesando sorteo:', sorteo);
                 
                 // Verificar que tenga los campos necesarios
                 if (!sorteo.concurso || !sorteo.sorteo || !sorteo.numeros || !Array.isArray(sorteo.numeros)) {
@@ -66,7 +63,6 @@ export class GeneradorInteligenteService {
             this.cacheTimestamp = ahora;
             this.estadisticasCache.clear();
             
-            console.log(`✅ [GENERADOR INTELIGENTE] Cargados ${this.datosHistoricos.length} sorteos históricos`);
 
         } catch (error) {
             console.error('❌ [GENERADOR INTELIGENTE] Error cargando datos:', error);
@@ -134,7 +130,6 @@ export class GeneradorInteligenteService {
         try {
             await this.cargarDatosHistoricos();
 
-            console.log(`🎯 [GENERADOR INTELIGENTE] Generando con algoritmo: ${algoritmo}`);
 
             let resultado;
 
@@ -175,7 +170,6 @@ export class GeneradorInteligenteService {
                     throw new Error(`Algoritmo "${algoritmo}" no válido`);
             }
 
-            console.log(`✅ [GENERADOR INTELIGENTE] Números generados: ${resultado.numeros.join(', ')}`);
             
             return resultado;
 

@@ -331,12 +331,8 @@ class App {
         if (tipo === '6-numeros') {
             container.classList.remove('hidden');
             
-            // Test: cargar datos históricos para verificar
-            console.log('🔍 [DEBUG] Cargando datos históricos para test...');
             try {
                 await this.generadorInteligenteService.cargarDatosHistoricos();
-                console.log('✅ [DEBUG] Datos históricos cargados:', this.generadorInteligenteService.datosHistoricos.length, 'sorteos');
-                console.log('📊 [DEBUG] Primeros 5 sorteos:', this.generadorInteligenteService.datosHistoricos.slice(0, 5));
             } catch (error) {
                 console.error('❌ [DEBUG] Error cargando datos:', error);
             }
@@ -523,7 +519,6 @@ class App {
         
         // Prevenir múltiples clicks
         if (this.generandoNumeros) {
-            console.log('⚠️ [GENERADOR] Ya se está generando, ignorando click adicional');
             return;
         }
         
@@ -577,8 +572,14 @@ class App {
                     
                     <!-- Números generados -->
                     <div class="bg-gradient-to-r from-primary/10 to-purple-500/10 rounded-lg p-4 mb-4 border border-primary/20">
-                        <div class="text-sm text-primary font-semibold mb-2">🎲 Números generados</div>
-                        <div class="flex justify-center gap-2 flex-wrap">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="text-sm text-primary font-semibold">🎲 Números generados</div>
+                            <button id="btn-regenerar-modal" class="px-3 py-1 text-xs bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-1" title="Regenerar con el mismo algoritmo">
+                                <i class="fas fa-redo text-xs"></i>
+                                Regenerar
+                            </button>
+                        </div>
+                        <div id="numeros-generados-modal" class="flex justify-center gap-2 flex-wrap">
                             ${resultado.numeros.map(num => 
                                 `<span class="inline-flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full text-sm font-bold">${num}</span>`
                             ).join('')}
@@ -616,6 +617,54 @@ class App {
             `;
             
             UIHelper.mostrarExito(mensajeDetallado);
+            
+            // Agregar event listener al botón de regenerar
+            setTimeout(() => {
+                const btnRegenerar = document.getElementById('btn-regenerar-modal');
+                if (btnRegenerar) {
+                    btnRegenerar.addEventListener('click', async () => {
+                        // Deshabilitar botón durante regeneración
+                        btnRegenerar.disabled = true;
+                        btnRegenerar.innerHTML = '<i class="fas fa-spinner fa-spin text-xs"></i> Generando...';
+                        
+                        try {
+                            // Regenerar números con el mismo algoritmo
+                            const nuevoResultado = await this.generadorInteligenteService.generarNumeros(algoritmo);
+                            const nuevaJugada = this.generadorInteligenteService.convertirAJugada(nuevoResultado);
+                            
+                            // Actualizar resultados en la UI principal
+                            this.resultadosController.mostrarResultados([nuevaJugada]);
+                            
+                            // Actualizar números en el modal usando ID específico
+                            const numerosContainer = document.getElementById('numeros-generados-modal');
+                            
+                            if (numerosContainer) {
+                                numerosContainer.innerHTML = nuevoResultado.numeros.map(num => 
+                                    `<span class="inline-flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full text-sm font-bold">${num}</span>`
+                                ).join('');
+                            }
+                            
+                            // Actualizar estadísticas si existen
+                            const estadisticasElements = document.querySelectorAll('.swal2-html-container [class*="text-slate-600"]');
+                            estadisticasElements.forEach(el => {
+                                if (el.textContent.includes('sorteos históricos')) {
+                                    // Mantener el texto de sorteos históricos
+                                } else if (el.textContent.includes('puntuación') && nuevoResultado.estadisticas.puntuacion) {
+                                    el.textContent = `Puntuación: ${nuevoResultado.estadisticas.puntuacion}`;
+                                }
+                            });
+                            
+                        } catch (error) {
+                            console.error('Error regenerando números:', error);
+                            UIHelper.mostrarError('Error al regenerar números');
+                        } finally {
+                            // Restaurar botón
+                            btnRegenerar.disabled = false;
+                            btnRegenerar.innerHTML = '<i class="fas fa-redo text-xs"></i> Regenerar';
+                        }
+                    });
+                }
+            }, 100);
 
         } catch (error) {
             console.error('Error generando números inteligentes:', error);

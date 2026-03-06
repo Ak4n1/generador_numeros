@@ -120,7 +120,6 @@ export class CustomSelect {
 
     onChange(value) {
         // Este método será sobrescrito desde main.js
-        console.log('Selected:', value);
     }
 
     getValue() {

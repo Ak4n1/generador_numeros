@@ -48,6 +48,9 @@ export class ResultadosUI {
         console.log('🔍 [DEBUG] Contenedor visible?', this.container.offsetHeight > 0);
         console.log('🔍 [DEBUG] Contenedor display:', getComputedStyle(this.container).display);
         console.log('🔍 [DEBUG] Contenedor visibility:', getComputedStyle(this.container).visibility);
+        console.log('🔍 [DEBUG] Contenedor padre:', this.container.parentElement);
+        console.log('🔍 [DEBUG] Contenedor padre visible?', this.container.parentElement?.offsetHeight > 0);
+        console.log('🔍 [DEBUG] Contenedor padre display:', this.container.parentElement ? getComputedStyle(this.container.parentElement).display : 'N/A');
         console.log('✅ [DEBUG] Renderizado completado');
     }
 

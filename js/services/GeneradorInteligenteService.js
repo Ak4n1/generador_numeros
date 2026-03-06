@@ -193,7 +193,12 @@ export class GeneradorInteligenteService {
             numeros: numeros.sort((a, b) => a - b),
             algoritmo: 'frecuencia-alta',
             timestamp: new Date().toISOString(),
-            estadisticas: { promedioFrecuencia: numeros.reduce((sum, n) => sum + estadisticas[n].frecuencia, 0) / 6 }
+            estadisticas: { 
+                promedioFrecuencia: numeros.reduce((sum, n) => {
+                    const stat = estadisticas.find(e => e.numero === n);
+                    return sum + (stat ? stat.frecuencia : 0);
+                }, 0) / 6 
+            }
         };
     }
 
@@ -209,7 +214,12 @@ export class GeneradorInteligenteService {
             numeros: numeros.sort((a, b) => a - b),
             algoritmo: 'frecuencia-baja',
             timestamp: new Date().toISOString(),
-            estadisticas: { promedioFrecuencia: numeros.reduce((sum, n) => sum + estadisticas[n].frecuencia, 0) / 6 }
+            estadisticas: { 
+                promedioFrecuencia: numeros.reduce((sum, n) => {
+                    const stat = estadisticas.find(e => e.numero === n);
+                    return sum + (stat ? stat.frecuencia : 0);
+                }, 0) / 6 
+            }
         };
     }
 
@@ -226,7 +236,12 @@ export class GeneradorInteligenteService {
             numeros: numeros.sort((a, b) => a - b),
             algoritmo: 'temporal-ascendente',
             timestamp: new Date().toISOString(),
-            estadisticas: { promedioTendencia: numeros.reduce((sum, n) => sum + estadisticas[n].tendenciaReciente, 0) / 6 }
+            estadisticas: { 
+                promedioTendencia: numeros.reduce((sum, n) => {
+                    const stat = estadisticas.find(e => e.numero === n);
+                    return sum + (stat ? stat.tendenciaReciente : 0);
+                }, 0) / 6 
+            }
         };
     }
 
@@ -243,7 +258,12 @@ export class GeneradorInteligenteService {
             numeros: numeros.sort((a, b) => a - b),
             algoritmo: 'temporal-descendente',
             timestamp: new Date().toISOString(),
-            estadisticas: { promedioTendencia: numeros.reduce((sum, n) => sum + estadisticas[n].tendenciaReciente, 0) / 6 }
+            estadisticas: { 
+                promedioTendencia: numeros.reduce((sum, n) => {
+                    const stat = estadisticas.find(e => e.numero === n);
+                    return sum + (stat ? stat.tendenciaReciente : 0);
+                }, 0) / 6 
+            }
         };
     }
 
@@ -261,11 +281,35 @@ export class GeneradorInteligenteService {
         });
 
         const totalNumeros = this.datosHistoricos.length * 6;
-        const distribucionObjetivo = {
-            bajo: Math.round((rangos.bajo / totalNumeros) * 6),
-            medio: Math.round((rangos.medio / totalNumeros) * 6),
-            alto: Math.round((rangos.alto / totalNumeros) * 6)
+        const proporcionBajo = rangos.bajo / totalNumeros;
+        const proporcionMedio = rangos.medio / totalNumeros;
+        const proporcionAlto = rangos.alto / totalNumeros;
+        
+        // Calcular distribución objetivo que sume exactamente 6
+        let distribucionObjetivo = {
+            bajo: Math.round(proporcionBajo * 6),
+            medio: Math.round(proporcionMedio * 6),
+            alto: Math.round(proporcionAlto * 6)
         };
+        
+        // Ajustar para que sume exactamente 6
+        const suma = distribucionObjetivo.bajo + distribucionObjetivo.medio + distribucionObjetivo.alto;
+        if (suma !== 6) {
+            const diferencia = 6 - suma;
+            // Ajustar el rango con mayor proporción
+            if (proporcionBajo >= proporcionMedio && proporcionBajo >= proporcionAlto) {
+                distribucionObjetivo.bajo += diferencia;
+            } else if (proporcionMedio >= proporcionAlto) {
+                distribucionObjetivo.medio += diferencia;
+            } else {
+                distribucionObjetivo.alto += diferencia;
+            }
+        }
+        
+        // Asegurar que ningún valor sea negativo
+        distribucionObjetivo.bajo = Math.max(0, distribucionObjetivo.bajo);
+        distribucionObjetivo.medio = Math.max(0, distribucionObjetivo.medio);
+        distribucionObjetivo.alto = Math.max(0, distribucionObjetivo.alto);
 
         const numeros = this.generarConDistribucion(estadisticas, distribucionObjetivo);
         
@@ -283,13 +327,20 @@ export class GeneradorInteligenteService {
         const temp = this.generarNumerosTemporalAscendente(tipoSorteo);
         const dist = this.generarNumerosDistribucion(tipoSorteo);
         
-        const numerosHibridos = [...new Set([...freq.numeros, ...temp.numeros, ...dist.numeros])]
+        let numerosHibridos = [...new Set([...freq.numeros, ...temp.numeros, ...dist.numeros])]
             .sort(() => Math.random() - 0.5)
-            .slice(0, 6)
-            .sort((a, b) => a - b);
+            .slice(0, 6);
+        
+        // Asegurar que tengamos exactamente 6 números
+        while (numerosHibridos.length < 6) {
+            const numeroAleatorio = Math.floor(Math.random() * 46);
+            if (!numerosHibridos.includes(numeroAleatorio)) {
+                numerosHibridos.push(numeroAleatorio);
+            }
+        }
         
         return {
-            numeros: numerosHibridos,
+            numeros: numerosHibridos.sort((a, b) => a - b),
             algoritmo: 'hibrido-equilibrado',
             timestamp: new Date().toISOString(),
             estadisticas: { componentes: ['frecuencia-alta', 'temporal-ascendente', 'distribucion'] }
@@ -329,33 +380,38 @@ export class GeneradorInteligenteService {
     seleccionarNumerosConPeso(candidatos, propiedad, invertir = false) {
         const numeros = [];
         const usados = new Set();
+        const candidatosDisponibles = [...candidatos]; // Copia para modificar
 
-        while (numeros.length < 6 && candidatos.length > 0) {
+        while (numeros.length < 6 && candidatosDisponibles.length > 0) {
             // Selección ponderada por peso
-            const pesos = candidatos.map(c => {
+            const pesos = candidatosDisponibles.map(c => {
                 const valor = Math.abs(c[propiedad]);
                 return invertir ? 1 / (valor + 0.001) : valor + 0.001;
             });
 
             const totalPeso = pesos.reduce((sum, peso) => sum + peso, 0);
             let random = Math.random() * totalPeso;
+            let seleccionado = false;
 
-            for (let i = 0; i < candidatos.length; i++) {
+            for (let i = 0; i < candidatosDisponibles.length; i++) {
                 random -= pesos[i];
-                if (random <= 0 && !usados.has(candidatos[i].numero)) {
-                    numeros.push(candidatos[i].numero);
-                    usados.add(candidatos[i].numero);
+                if (random <= 0 && !usados.has(candidatosDisponibles[i].numero)) {
+                    numeros.push(candidatosDisponibles[i].numero);
+                    usados.add(candidatosDisponibles[i].numero);
+                    candidatosDisponibles.splice(i, 1); // Remover candidato usado
+                    seleccionado = true;
                     break;
                 }
             }
 
-            // Evitar bucle infinito
-            if (numeros.length === 0) {
-                const numeroAleatorio = candidatos[Math.floor(Math.random() * candidatos.length)].numero;
-                if (!usados.has(numeroAleatorio)) {
-                    numeros.push(numeroAleatorio);
-                    usados.add(numeroAleatorio);
+            // Si no se seleccionó ninguno, tomar el primero disponible
+            if (!seleccionado && candidatosDisponibles.length > 0) {
+                const candidato = candidatosDisponibles[0];
+                if (!usados.has(candidato.numero)) {
+                    numeros.push(candidato.numero);
+                    usados.add(candidato.numero);
                 }
+                candidatosDisponibles.shift(); // Remover el primero
             }
         }
 
@@ -385,13 +441,25 @@ export class GeneradorInteligenteService {
         // Seleccionar según distribución objetivo
         ['bajo', 'medio', 'alto'].forEach(rango => {
             const cantidad = distribucion[rango];
-            const candidatos = rangos[rango];
+            const candidatos = [...rangos[rango]]; // Copia para modificar
             
             for (let i = 0; i < cantidad && candidatos.length > 0; i++) {
-                const candidato = candidatos[Math.floor(Math.random() * candidatos.length)];
-                if (!usados.has(candidato.numero)) {
-                    numeros.push(candidato.numero);
-                    usados.add(candidato.numero);
+                let intentos = 0;
+                let seleccionado = false;
+                
+                while (!seleccionado && candidatos.length > 0 && intentos < 10) {
+                    const indiceAleatorio = Math.floor(Math.random() * candidatos.length);
+                    const candidato = candidatos[indiceAleatorio];
+                    
+                    if (!usados.has(candidato.numero)) {
+                        numeros.push(candidato.numero);
+                        usados.add(candidato.numero);
+                        seleccionado = true;
+                    }
+                    
+                    // Remover candidato usado o no válido
+                    candidatos.splice(indiceAleatorio, 1);
+                    intentos++;
                 }
             }
         });

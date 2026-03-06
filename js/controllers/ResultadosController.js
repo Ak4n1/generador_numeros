@@ -18,8 +18,14 @@ export class ResultadosController {
      * Muestra los resultados generados
      */
     mostrarResultados(jugadas) {
+        console.log('🎮 [DEBUG] ResultadosController.mostrarResultados llamado con:', jugadas);
+        console.log('🎮 [DEBUG] this.resultadosUI:', this.resultadosUI);
+        
         this.resultadosActuales = jugadas;
+        
+        console.log('🎮 [DEBUG] Llamando a resultadosUI.renderizar...');
         this.resultadosUI.renderizar(jugadas);
+        console.log('🎮 [DEBUG] resultadosUI.renderizar completado');
     }
 
     /**

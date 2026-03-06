@@ -30,13 +30,24 @@ export class ResultadosUI {
         }
 
         console.log('🎯 [DEBUG] Renderizando', jugadas.length, 'jugadas');
+        console.log('🔍 [DEBUG] Contenedor antes de limpiar:', this.container.innerHTML);
+        
         this.container.innerHTML = '';
+        console.log('🔍 [DEBUG] Contenedor después de limpiar:', this.container.innerHTML);
         
         jugadas.forEach((jugada, index) => {
+            console.log('🎯 [DEBUG] Creando card para jugada', index, ':', jugada);
             const card = this.crearCard(jugada, index);
+            console.log('🔍 [DEBUG] Card creada:', card);
+            console.log('🔍 [DEBUG] Card HTML:', card.outerHTML);
             this.container.appendChild(card);
+            console.log('🔍 [DEBUG] Card agregada al contenedor');
         });
         
+        console.log('🔍 [DEBUG] Contenedor final:', this.container.innerHTML);
+        console.log('🔍 [DEBUG] Contenedor visible?', this.container.offsetHeight > 0);
+        console.log('🔍 [DEBUG] Contenedor display:', getComputedStyle(this.container).display);
+        console.log('🔍 [DEBUG] Contenedor visibility:', getComputedStyle(this.container).visibility);
         console.log('✅ [DEBUG] Renderizado completado');
     }
 

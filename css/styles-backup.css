@@ -905,6 +905,7 @@ body {
     font-size: 0.875rem;
     font-weight: 700;
     cursor: pointer;
+    transition: all 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -917,7 +918,10 @@ body {
     color: var(--slate-300);
 }
 
-
+.btn-action:hover {
+    background-color: rgba(115, 23, 207, 0.1);
+    color: var(--primary);
+}
 
 .btn-save {
     padding: 0.5rem 1rem;
@@ -2577,12 +2581,17 @@ button:disabled:hover {
 }
 
 
+
 #resultados-container {
     display: grid !important;
     grid-template-columns: 1fr !important;
 }
 
 /* Mejoras para debugging */
+.debug-visible {
+    border: 2px solid red !important;
+    background-color: rgba(255, 0, 0, 0.1) !important;
+}
 
 /* Mejoras para el scroll personalizado en todos los contenedores */
 .results-container::-webkit-scrollbar,
@@ -2643,6 +2652,7 @@ a:focus-visible {
 @media (hover: hover) {
     .btn-primary:hover,
     .btn-secondary:hover,
+    .btn-action:hover,
     .btn-generador:hover,
     .filtro-btn:hover,
     .nav-link:hover {
@@ -2654,6 +2664,7 @@ a:focus-visible {
 @media (hover: none) {
     .btn-primary:active,
     .btn-secondary:active,
+    .btn-action:active,
     .btn-generador:active,
     .filtro-btn:active,
     .nav-link:active {
@@ -3634,3 +3645,6 @@ a:focus-visible {
     height: 1.2rem !important;
 }
 
+.results-header {
+    height: 1.5rem !important;
+}

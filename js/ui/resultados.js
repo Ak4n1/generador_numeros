@@ -124,7 +124,7 @@ export class ResultadosUI {
     renderizarNumeros(container, jugada) {
         container.innerHTML = '';
         
-        if (jugada.tipo.includes('6 Números')) {
+        if (jugada.tipo.includes('6 Números') || jugada.tipo === '6-numeros') {
             // Mostrar como bolillas
             jugada.numeros.forEach(num => {
                 const ball = document.createElement('div');
@@ -296,7 +296,7 @@ export class GuardadosUI {
         const numerosDiv = document.createElement('div');
         numerosDiv.className = 'guardado-numeros';
         
-        if (jugada.tipo.includes('6 Números')) {
+        if (jugada.tipo.includes('6 Números') || jugada.tipo === '6-numeros') {
             // Mostrar como mini bolillas
             jugada.numeros.forEach(num => {
                 const ball = document.createElement('div');

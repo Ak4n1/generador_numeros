@@ -2,7 +2,7 @@ import Quini6APIService from './services/Quini6APIService.js';
 
 const apiService = new Quini6APIService();
 
-// Cargar resultados de hoy
+// Cargar resultados de hoy (último sorteo de la base de datos)
 async function cargarResultadosHoy() {
     const container = document.getElementById('resultados-hoy');
     container.innerHTML = `
@@ -12,8 +12,19 @@ async function cargarResultadosHoy() {
     `;
 
     try {
-        const response = await apiService.obtenerResultados();
-        mostrarResultados(response.data, container, response.timestamp);
+        const response = await fetch(`${apiService.apiUrl}/api/quini6/ultimo`);
+        const data = await response.json();
+        
+        if (data.success && data.data.length > 0) {
+            mostrarResultados(data.data, container, data.timestamp);
+        } else {
+            container.innerHTML = `
+                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 text-center">
+                    <i class="fas fa-inbox text-slate-500 text-3xl mb-2"></i>
+                    <p class="text-slate-400">No hay resultados disponibles</p>
+                </div>
+            `;
+        }
     } catch (error) {
         container.innerHTML = `
             <div class="bg-red-500/10 border border-red-500/20 rounded-xl p-6 text-center">
@@ -102,7 +113,7 @@ function mostrarResultados(resultados, container, timestamp) {
             </div>
             <div class="text-center mt-4 pt-4 border-t border-slate-700">
                 <div class="text-xs text-slate-500">
-                    Fuente: notitimba.com | Actualizado: ${new Date(timestamp).toLocaleString('es-AR')}
+                    Fuente: Base de datos histórica | Actualizado: ${new Date(timestamp).toLocaleString('es-AR')}
                 </div>
             </div>
         </div>

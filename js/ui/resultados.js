@@ -51,6 +51,10 @@ export class ResultadosUI {
         console.log('🔍 [DEBUG] Contenedor padre:', this.container.parentElement);
         console.log('🔍 [DEBUG] Contenedor padre visible?', this.container.parentElement?.offsetHeight > 0);
         console.log('🔍 [DEBUG] Contenedor padre display:', this.container.parentElement ? getComputedStyle(this.container.parentElement).display : 'N/A');
+        console.log('🔍 [DEBUG] Contenedor padre clases:', this.container.parentElement?.className);
+        console.log('🔍 [DEBUG] Abuelo del contenedor:', this.container.parentElement?.parentElement);
+        console.log('🔍 [DEBUG] Abuelo visible?', this.container.parentElement?.parentElement?.offsetHeight > 0);
+        console.log('🔍 [DEBUG] Abuelo display:', this.container.parentElement?.parentElement ? getComputedStyle(this.container.parentElement.parentElement).display : 'N/A');
         console.log('✅ [DEBUG] Renderizado completado');
     }
 

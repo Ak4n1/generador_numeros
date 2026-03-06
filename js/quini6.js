@@ -46,7 +46,7 @@ async function cargarHistorial() {
     `;
 
     try {
-        const response = await fetch(`${apiService.apiUrl}/api/quini6/historial?limite=20`);
+        const response = await fetch(`${apiService.apiUrl}/api/quini6/historial?limite=10`);
         const data = await response.json();
         
         if (data.success && data.data.length > 0) {

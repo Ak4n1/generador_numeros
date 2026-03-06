@@ -21,21 +21,33 @@ class App {
     }
 
     async init() {
+        console.log('🔧 [DEBUG] Iniciando servicios...');
         this.initServices();
+        
+        console.log('🔧 [DEBUG] Iniciando controladores...');
         this.initControllers();
+        
+        console.log('🔧 [DEBUG] Iniciando UI...');
         this.initUI();
+        
+        console.log('🔧 [DEBUG] Iniciando event listeners...');
         this.initEventListeners();
+        
+        console.log('🔧 [DEBUG] Cargando guardados...');
         this.resultadosController.cargarGuardados();
         
         // Inicializar variables de control
         this.generandoNumeros = false;
         
+        console.log('🔧 [DEBUG] Configurando filtros avanzados...');
         // Inicializar visibilidad del botón de filtros avanzados y generadores inteligentes
         this.toggleFiltrosAvanzadosButton('6-numeros');
         await this.toggleGeneradoresInteligentes('6-numeros');
         
         // Actualizar estado inicial del botón de filtros avanzados
         this.actualizarEstadoBotonFiltrosAvanzados(null);
+        
+        console.log('✅ [DEBUG] Inicialización completa');
     }
 
     /**
@@ -192,19 +204,40 @@ class App {
         });
 
         // Botón generar
-        document.getElementById('btn-generar').addEventListener('click', () => {
-            this.generarNumeros();
-        });
+        const btnGenerar = document.getElementById('btn-generar');
+        if (btnGenerar) {
+            console.log('✅ [DEBUG] Botón generar encontrado, agregando listener');
+            btnGenerar.addEventListener('click', () => {
+                console.log('🎯 [DEBUG] Click en botón generar');
+                this.generarNumeros();
+            });
+        } else {
+            console.error('❌ [DEBUG] Botón generar NO encontrado');
+        }
 
         // Botón auto-generar
-        document.getElementById('btn-auto-generar').addEventListener('click', () => {
-            this.toggleAutoGenerar();
-        });
+        const btnAutoGenerar = document.getElementById('btn-auto-generar');
+        if (btnAutoGenerar) {
+            console.log('✅ [DEBUG] Botón auto-generar encontrado, agregando listener');
+            btnAutoGenerar.addEventListener('click', () => {
+                console.log('🎯 [DEBUG] Click en botón auto-generar');
+                this.toggleAutoGenerar();
+            });
+        } else {
+            console.error('❌ [DEBUG] Botón auto-generar NO encontrado');
+        }
 
         // Botón limpiar
-        document.getElementById('btn-limpiar').addEventListener('click', () => {
-            this.resultadosController.limpiarResultados();
-        });
+        const btnLimpiar = document.getElementById('btn-limpiar');
+        if (btnLimpiar) {
+            console.log('✅ [DEBUG] Botón limpiar encontrado, agregando listener');
+            btnLimpiar.addEventListener('click', () => {
+                console.log('🎯 [DEBUG] Click en botón limpiar');
+                this.resultadosController.limpiarResultados();
+            });
+        } else {
+            console.error('❌ [DEBUG] Botón limpiar NO encontrado');
+        }
 
         // Botón limpiar guardados
         document.getElementById('btn-limpiar-guardados').addEventListener('click', () => {
@@ -493,20 +526,30 @@ class App {
      * Genera números manualmente
      */
     generarNumeros() {
+        console.log('🎲 [DEBUG] Iniciando generación de números...');
         try {
             const config = this.configuracionController.obtenerConfiguracion();
+            console.log('🔍 [DEBUG] Configuración obtenida:', config);
+            
             const cantidad = this.configuracionController.obtenerCantidadJugadas();
+            console.log('🔍 [DEBUG] Cantidad de jugadas:', cantidad);
             
             const validacionCantidad = Validador.validarCantidadJugadas(cantidad);
             if (!validacionCantidad.valido) {
+                console.error('❌ [DEBUG] Validación cantidad falló:', validacionCantidad.mensaje);
                 UIHelper.mostrarError(validacionCantidad.mensaje);
                 return;
             }
 
+            console.log('🎯 [DEBUG] Generando jugadas...');
             const jugadas = this.generadorService.generarJugadas(config, validacionCantidad.cantidad);
+            console.log('✅ [DEBUG] Jugadas generadas:', jugadas);
+            
             this.resultadosController.mostrarResultados(jugadas);
+            console.log('✅ [DEBUG] Resultados mostrados');
 
         } catch (error) {
+            console.error('❌ [DEBUG] Error en generarNumeros:', error);
             UIHelper.mostrarError(error.message);
         }
     }
@@ -714,11 +757,19 @@ class App {
      * Toggle auto-generación
      */
     toggleAutoGenerar() {
+        console.log('🔄 [DEBUG] Toggle auto generar iniciado');
+        
         const btn = document.getElementById('btn-auto-generar');
         const icon = document.getElementById('auto-icon');
         const text = document.getElementById('auto-text');
 
+        if (!btn || !icon || !text) {
+            console.error('❌ [DEBUG] Elementos auto-generar no encontrados:', { btn: !!btn, icon: !!icon, text: !!text });
+            return;
+        }
+
         if (this.autoGeneradorService.getIsRunning()) {
+            console.log('🛑 [DEBUG] Deteniendo auto-generador');
             // Detener
             this.autoGeneradorService.stop();
             icon.className = 'fas fa-play text-2xl';
@@ -726,17 +777,22 @@ class App {
             btn.classList.remove('bg-red-500/80', 'hover:bg-red-600/80');
             btn.classList.add('bg-white/20', 'hover:bg-white/30');
         } else {
+            console.log('▶️ [DEBUG] Iniciando auto-generador');
             // Iniciar
             const cantidadJugadas = this.configuracionController.obtenerCantidadJugadas();
+            console.log('🔍 [DEBUG] Cantidad jugadas para auto:', cantidadJugadas);
             
             this.autoGeneradorService.start(() => {
                 try {
+                    console.log('🎲 [DEBUG] Ejecutando auto-generación...');
                     const config = this.configuracionController.obtenerConfiguracion();
                     const jugadas = this.generadorService.generarJugadas(config, cantidadJugadas);
                     
                     // Reemplazar manteniendo la cantidad configurada
                     this.resultadosController.reemplazarResultados(jugadas, cantidadJugadas);
+                    console.log('✅ [DEBUG] Auto-generación completada');
                 } catch (error) {
+                    console.error('❌ [DEBUG] Error en auto-generación:', error);
                     this.autoGeneradorService.stop();
                     UIHelper.mostrarError(error.message);
                     // Restaurar botón
@@ -850,6 +906,14 @@ class App {
     }
 }
 
-// Inicializar app
-const app = new App();
-window.app = app; // Para acceso global desde HTML
+// Inicializar app cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('🚀 [DEBUG] DOM cargado, inicializando app...');
+    try {
+        const app = new App();
+        window.app = app; // Para acceso global desde HTML
+        console.log('✅ [DEBUG] App inicializada correctamente');
+    } catch (error) {
+        console.error('❌ [DEBUG] Error inicializando app:', error);
+    }
+});

@@ -1,21 +1,43 @@
 export class ResultadosUI {
     constructor(containerId) {
+        console.log('🔧 [DEBUG] Inicializando ResultadosUI con containerId:', containerId);
         this.container = document.getElementById(containerId);
+        
+        if (!this.container) {
+            console.error('❌ [DEBUG] Contenedor de resultados NO encontrado:', containerId);
+            return;
+        }
+        
+        console.log('✅ [DEBUG] Contenedor de resultados encontrado:', this.container);
         this.autoShuffleStates = new Map(); // Guardar estado de auto-shuffle por index
+        
+        // Mostrar estado inicial vacío
+        this.mostrarVacio();
     }
 
     renderizar(jugadas) {
+        console.log('🎨 [DEBUG] Renderizando jugadas:', jugadas);
+        
+        if (!this.container) {
+            console.error('❌ [DEBUG] No se puede renderizar - contenedor no existe');
+            return;
+        }
+        
         if (!jugadas || jugadas.length === 0) {
+            console.log('📝 [DEBUG] No hay jugadas, mostrando vacío');
             this.mostrarVacio();
             return;
         }
 
+        console.log('🎯 [DEBUG] Renderizando', jugadas.length, 'jugadas');
         this.container.innerHTML = '';
         
         jugadas.forEach((jugada, index) => {
             const card = this.crearCard(jugada, index);
             this.container.appendChild(card);
         });
+        
+        console.log('✅ [DEBUG] Renderizado completado');
     }
 
     crearCard(jugada, index) {
@@ -141,12 +163,21 @@ export class ResultadosUI {
     }
 
     mostrarVacio() {
+        console.log('📋 [DEBUG] Mostrando estado vacío');
+        
+        if (!this.container) {
+            console.error('❌ [DEBUG] No se puede mostrar vacío - contenedor no existe');
+            return;
+        }
+        
         this.container.innerHTML = `
             <div class="text-center py-12 text-slate-400 col-span-full">
                 <i class="fas fa-dice text-6xl mb-4 block opacity-30"></i>
                 <p>Genera números para ver los resultados aquí</p>
             </div>
         `;
+        
+        console.log('✅ [DEBUG] Estado vacío mostrado');
     }
 
     onGuardar(jugada, index) {

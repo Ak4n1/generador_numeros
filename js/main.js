@@ -113,9 +113,18 @@ class App {
      * Inicializa la UI
      */
     initUI() {
+        console.log('🎨 [DEBUG] Inicializando UI...');
+        
         const resultadosUI = new ResultadosUI('resultados-container');
         const guardadosUI = new GuardadosUI('guardados-container');
+        
+        if (!resultadosUI.container) {
+            console.error('❌ [DEBUG] FALLO CRÍTICO: ResultadosUI no se inicializó correctamente');
+            return;
+        }
+        
         this.resultadosController = new ResultadosController(resultadosUI, guardadosUI);
+        console.log('✅ [DEBUG] ResultadosController creado');
 
         // Conectar callbacks de shuffle
         resultadosUI.onShuffle = (index) => this.shuffleJugada(index);
@@ -124,6 +133,8 @@ class App {
         // Inicializar modales de resultados
         this.resultadosQuini6Modal = new ResultadosQuini6Modal();
         this.resultadosQuinielaModal = new ResultadosQuinielaModal();
+        
+        console.log('✅ [DEBUG] UI inicializada completamente');
     }
 
     /**

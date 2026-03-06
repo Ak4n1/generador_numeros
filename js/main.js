@@ -6,6 +6,7 @@ import { FiltrosAvanzadosModal } from './ui/filtrosAvanzadosModal.js';
 import ResultadosQuini6Modal from './ui/resultadosQuini6Modal.js';
 import ResultadosQuinielaModal from './ui/resultadosQuinielaModal.js';
 import { GeneradorService } from './services/GeneradorService.js';
+import { GeneradorInteligenteService } from './services/GeneradorInteligenteService.js';
 import { AutoGeneradorService } from './services/AutoGeneradorService.js';
 import { ItemAutoShuffleService } from './services/ItemAutoShuffleService.js';
 import { ConfiguracionController } from './controllers/ConfiguracionController.js';
@@ -16,14 +17,25 @@ import { ResultadosController } from './controllers/ResultadosController.js';
  */
 class App {
     constructor() {
+        this.init();
+    }
+
+    async init() {
         this.initServices();
         this.initControllers();
         this.initUI();
         this.initEventListeners();
         this.resultadosController.cargarGuardados();
         
-        // Inicializar visibilidad del botón de filtros avanzados
+        // Inicializar variables de control
+        this.generandoNumeros = false;
+        
+        // Inicializar visibilidad del botón de filtros avanzados y generadores inteligentes
         this.toggleFiltrosAvanzadosButton('6-numeros');
+        await this.toggleGeneradoresInteligentes('6-numeros');
+        
+        // Actualizar estado inicial del botón de filtros avanzados
+        this.actualizarEstadoBotonFiltrosAvanzados(null);
     }
 
     /**
@@ -31,6 +43,7 @@ class App {
      */
     initServices() {
         this.generadorService = new GeneradorService();
+        this.generadorInteligenteService = new GeneradorInteligenteService();
         this.autoGeneradorService = new AutoGeneradorService();
         this.itemAutoShuffleService = new ItemAutoShuffleService();
     }
@@ -73,6 +86,7 @@ class App {
             if (await this.verificarCambioConAutoActivo('cambiar el tipo de lotería')) {
                 this.configuracionController.actualizarLimitesRango();
                 this.toggleFiltrosAvanzadosButton(value);
+                await this.toggleGeneradoresInteligentes(value);
             } else {
                 // Revertir al valor anterior
                 const valorAnterior = this.tipoLoteriaSelect.selectedValue;
@@ -81,9 +95,6 @@ class App {
         };
 
         this.configuracionController = new ConfiguracionController(this.tipoLoteriaSelect);
-        
-        // Actualizar estado inicial del botón de filtros avanzados
-        this.actualizarEstadoBotonFiltrosAvanzados(null);
     }
 
     /**
@@ -205,14 +216,78 @@ class App {
             this.abrirFiltrosAvanzados();
         });
 
-        // Botones de resultados
-        document.getElementById('btn-ver-resultados-quini6').addEventListener('click', () => {
-            this.resultadosQuini6Modal.mostrar();
-        });
+        // Botones generadores inteligentes (verificar que existan)
+        const btnFrecuenciaAlta = document.getElementById('btn-frecuencia-alta');
+        if (btnFrecuenciaAlta) {
+            btnFrecuenciaAlta.addEventListener('click', () => {
+                this.generarNumerosInteligentes('frecuencia-alta');
+            });
+        }
         
-        document.getElementById('btn-ver-resultados-quiniela').addEventListener('click', () => {
-            this.resultadosQuinielaModal.mostrar();
-        });
+        const btnFrecuenciaBaja = document.getElementById('btn-frecuencia-baja');
+        if (btnFrecuenciaBaja) {
+            btnFrecuenciaBaja.addEventListener('click', () => {
+                this.generarNumerosInteligentes('frecuencia-baja');
+            });
+        }
+        
+        const btnTemporalAscendente = document.getElementById('btn-temporal-ascendente');
+        if (btnTemporalAscendente) {
+            btnTemporalAscendente.addEventListener('click', () => {
+                this.generarNumerosInteligentes('temporal-ascendente');
+            });
+        }
+        
+        const btnTemporalDescendente = document.getElementById('btn-temporal-descendente');
+        if (btnTemporalDescendente) {
+            btnTemporalDescendente.addEventListener('click', () => {
+                this.generarNumerosInteligentes('temporal-descendente');
+            });
+        }
+        
+        const btnDistribucion = document.getElementById('btn-distribucion');
+        if (btnDistribucion) {
+            btnDistribucion.addEventListener('click', () => {
+                this.generarNumerosInteligentes('distribucion');
+            });
+        }
+        
+        const btnHibridoEquilibrado = document.getElementById('btn-hibrido-equilibrado');
+        if (btnHibridoEquilibrado) {
+            btnHibridoEquilibrado.addEventListener('click', () => {
+                this.generarNumerosInteligentes('hibrido-equilibrado');
+            });
+        }
+        
+        const btnHibridoAgresivo = document.getElementById('btn-hibrido-agresivo');
+        if (btnHibridoAgresivo) {
+            btnHibridoAgresivo.addEventListener('click', () => {
+                this.generarNumerosInteligentes('hibrido-agresivo');
+            });
+        }
+
+        // Botón toggle acordeón generadores inteligentes
+        const btnToggleGeneradores = document.getElementById('btn-toggle-generadores');
+        if (btnToggleGeneradores) {
+            btnToggleGeneradores.addEventListener('click', () => {
+                this.toggleAcordeonGeneradores();
+            });
+        }
+
+        // Botones de resultados (verificar que existan)
+        const btnResultadosQuini6 = document.getElementById('btn-ver-resultados-quini6');
+        if (btnResultadosQuini6) {
+            btnResultadosQuini6.addEventListener('click', () => {
+                this.resultadosQuini6Modal.mostrar();
+            });
+        }
+        
+        const btnResultadosQuiniela = document.getElementById('btn-ver-resultados-quiniela');
+        if (btnResultadosQuiniela) {
+            btnResultadosQuiniela.addEventListener('click', () => {
+                this.resultadosQuinielaModal.mostrar();
+            });
+        }
     }
 
     /**
@@ -224,6 +299,42 @@ class App {
             btn.classList.remove('hidden');
         } else {
             btn.classList.add('hidden');
+        }
+    }
+
+    /**
+     * Toggle del acordeón de generadores inteligentes
+     */
+    toggleAcordeonGeneradores() {
+        const contenido = document.getElementById('contenido-generadores');
+        const icono = document.getElementById('icono-acordeon');
+        
+        if (contenido && icono) {
+            if (contenido.classList.contains('hidden')) {
+                contenido.classList.remove('hidden');
+                icono.classList.add('rotate-180');
+            } else {
+                contenido.classList.add('hidden');
+                icono.classList.remove('rotate-180');
+            }
+        }
+    }
+    async toggleGeneradoresInteligentes(tipo) {
+        const container = document.getElementById('generadores-inteligentes');
+        if (tipo === '6-numeros') {
+            container.classList.remove('hidden');
+            
+            // Test: cargar datos históricos para verificar
+            console.log('🔍 [DEBUG] Cargando datos históricos para test...');
+            try {
+                await this.generadorInteligenteService.cargarDatosHistoricos();
+                console.log('✅ [DEBUG] Datos históricos cargados:', this.generadorInteligenteService.datosHistoricos.length, 'sorteos');
+                console.log('📊 [DEBUG] Primeros 5 sorteos:', this.generadorInteligenteService.datosHistoricos.slice(0, 5));
+            } catch (error) {
+                console.error('❌ [DEBUG] Error cargando datos:', error);
+            }
+        } else {
+            container.classList.add('hidden');
         }
     }
 
@@ -395,6 +506,139 @@ class App {
         } catch (error) {
             UIHelper.mostrarError(error.message);
         }
+    }
+
+    /**
+     * Genera números usando algoritmos inteligentes
+     */
+    async generarNumerosInteligentes(algoritmo) {
+        const loadingElement = document.getElementById('loading-generador');
+        
+        // Prevenir múltiples clicks
+        if (this.generandoNumeros) {
+            console.log('⚠️ [GENERADOR] Ya se está generando, ignorando click adicional');
+            return;
+        }
+        
+        try {
+            // Bloquear nuevas generaciones
+            this.generandoNumeros = true;
+            this.deshabilitarBotonesGeneradores(true);
+            
+            // Mostrar loading
+            loadingElement.classList.remove('hidden');
+            
+            // Verificar si hay auto-generación activa
+            if (this.autoGeneradorService.getIsRunning()) {
+                const confirmado = await UIHelper.confirmar(
+                    `La generación automática está activa.<br><br>
+                     Si generas números inteligentes, se detendrá la generación automática.<br><br>
+                     ¿Deseas continuar?`
+                );
+                
+                if (!confirmado) {
+                    return;
+                }
+                
+                this.toggleAutoGenerar();
+            }
+
+            // Generar números inteligentes
+            const resultado = await this.generadorInteligenteService.generarNumeros(algoritmo);
+            const jugada = this.generadorInteligenteService.convertirAJugada(resultado);
+            
+            // Mostrar resultado
+            this.resultadosController.mostrarResultados([jugada]);
+            
+            // Mostrar modal con información del algoritmo
+            const descripcion = this.generadorInteligenteService.getDescripcionAlgoritmo(algoritmo);
+            const icono = this.generadorInteligenteService.getIconoAlgoritmo(algoritmo);
+            const autor = this.generadorInteligenteService.getAutorAlgoritmo(algoritmo);
+            const totalSorteos = this.generadorInteligenteService.datosHistoricos.length;
+            
+            // Convertir nombre del algoritmo a formato legible
+            const nombreAlgoritmo = algoritmo
+                .split('-')
+                .map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1))
+                .join(' ');
+            
+            const mensajeDetallado = `
+                <div class="text-center">
+                    <div class="text-4xl mb-4">${icono}</div>
+                    <div class="font-bold text-xl mb-2 text-primary">Algoritmo: ${nombreAlgoritmo}</div>
+                    <div class="text-sm text-slate-600 dark:text-slate-400 mb-4">${descripcion}</div>
+                    
+                    <!-- Números generados -->
+                    <div class="bg-gradient-to-r from-primary/10 to-purple-500/10 rounded-lg p-4 mb-4 border border-primary/20">
+                        <div class="text-sm text-primary font-semibold mb-2">🎲 Números generados</div>
+                        <div class="flex justify-center gap-2 flex-wrap">
+                            ${resultado.numeros.map(num => 
+                                `<span class="inline-flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full text-sm font-bold">${num}</span>`
+                            ).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="bg-primary/10 rounded-lg p-4 mb-4">
+                        <div class="flex items-center justify-between mb-1">
+                            <div class="text-sm text-primary font-semibold"><i class="fas fa-chart-bar mr-2"></i>Datos analizados</div>
+                            <a href="quini6.html" target="_blank" class="text-primary hover:text-primary/80 transition-colors" title="Ver datos históricos de Quini 6">
+                                <i class="fas fa-external-link-alt text-sm"></i>
+                            </a>
+                        </div>
+                        <div class="text-sm text-slate-600 dark:text-slate-400">${totalSorteos} sorteos históricos</div>
+                    </div>
+                    <div class="text-sm text-green-600 dark:text-green-400 mb-3 font-medium">
+                        Números generados exitosamente
+                    </div>
+                    <div class="text-xs text-slate-400 border-t border-slate-200 dark:border-slate-600 pt-3">
+                        <i class="fas fa-graduation-cap mr-1"></i>${autor}
+                    </div>
+                </div>
+            `;
+            
+            UIHelper.mostrarExito(mensajeDetallado);
+
+        } catch (error) {
+            console.error('Error generando números inteligentes:', error);
+            UIHelper.mostrarError(`Error al generar números inteligentes: ${error.message}`);
+        } finally {
+            // Desbloquear generaciones
+            this.generandoNumeros = false;
+            this.deshabilitarBotonesGeneradores(false);
+            
+            // Ocultar loading
+            loadingElement.classList.add('hidden');
+        }
+    }
+
+    /**
+     * Deshabilita/habilita todos los botones de generadores inteligentes
+     */
+    deshabilitarBotonesGeneradores(deshabilitar) {
+        const botones = [
+            'btn-frecuencia-alta',
+            'btn-frecuencia-baja', 
+            'btn-temporal-ascendente',
+            'btn-temporal-descendente',
+            'btn-distribucion',
+            'btn-hibrido-equilibrado',
+            'btn-hibrido-agresivo'
+        ];
+
+        botones.forEach(id => {
+            const boton = document.getElementById(id);
+            if (boton) {
+                if (deshabilitar) {
+                    boton.disabled = true;
+                    boton.classList.add('opacity-50', 'cursor-not-allowed');
+                    boton.classList.remove('hover:bg-primary/5');
+                } else {
+                    boton.disabled = false;
+                    boton.classList.remove('opacity-50', 'cursor-not-allowed');
+                    boton.classList.add('hover:bg-primary/5');
+                }
+            }
+        });
     }
 
     /**

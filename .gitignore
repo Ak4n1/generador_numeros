@@ -33,3 +33,5 @@ yarn-error.log*
 
 # Carpeta de diseños
 diseños/
+.vercel
+.env*.local

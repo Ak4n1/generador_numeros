@@ -3,7 +3,36 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Generador de Números - Lotería</title>
+    <title>Generador de Números - Lotería Argentina</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="gl.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="gl.ico">
+    
+    <!-- Meta tags SEO -->
+    <meta name="description" content="Generador inteligente de números para loterías argentinas. Algoritmos probabilísticos basados en datos históricos para Quini 6, Quiniela y más.">
+    <meta name="keywords" content="lotería argentina, quini 6, quiniela, generador números, algoritmos probabilísticos, números inteligentes">
+    <meta name="author" content="Ak4n1">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ak4n1.github.io/quinela-automatica/">
+    <meta property="og:title" content="Generador de Números - Lotería Argentina">
+    <meta property="og:description" content="Generador inteligente de números para loterías argentinas con algoritmos probabilísticos basados en datos históricos.">
+    <meta property="og:image" content="https://ak4n1.github.io/quinela-automatica/gl.ico">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ak4n1.github.io/quinela-automatica/">
+    <meta property="twitter:title" content="Generador de Números - Lotería Argentina">
+    <meta property="twitter:description" content="Generador inteligente de números para loterías argentinas con algoritmos probabilísticos basados en datos históricos.">
+    <meta property="twitter:image" content="https://ak4n1.github.io/quinela-automatica/gl.ico">
+    
+    <!-- Theme color -->
+    <meta name="theme-color" content="#7317cf">
+    <meta name="msapplication-TileColor" content="#7317cf">
+    
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
@@ -84,6 +113,48 @@
                                 <i class="fas fa-sliders-h"></i>
                                 Filtros Avanzados
                             </button>
+                            
+                            <!-- Generadores Inteligentes (solo para 6 números) -->
+                            <div id="generadores-inteligentes" class="hidden mt-4">
+                                <div class="border border-primary/20 rounded-lg overflow-hidden">
+                                    <button id="btn-toggle-generadores" class="w-full p-4 bg-gradient-to-r from-primary/5 to-purple-500/5 hover:from-primary/10 hover:to-purple-500/10 transition-colors flex items-center justify-between text-left">
+                                        <div class="flex items-center gap-2">
+                                            <i class="fas fa-brain text-primary"></i>
+                                            <h4 class="text-sm font-bold text-primary">Generadores Inteligentes</h4>
+                                        </div>
+                                        <i id="icono-acordeon" class="fas fa-chevron-down text-primary transition-transform"></i>
+                                    </button>
+                                    <div id="contenido-generadores" class="hidden border-t border-primary/20 p-4 bg-white dark:bg-slate-800/50">
+                                        <div class="grid grid-cols-1 gap-2">
+                                            <button id="btn-frecuencia-alta" class="p-2 text-xs font-medium rounded-lg border border-primary/20 bg-white dark:bg-slate-800 hover:bg-primary/5 transition-colors flex items-center gap-2" title="Números que salen más seguido">
+                                                <i class="fas fa-fire text-red-500"></i> Números Calientes
+                                            </button>
+                                            <button id="btn-frecuencia-baja" class="p-2 text-xs font-medium rounded-lg border border-primary/20 bg-white dark:bg-slate-800 hover:bg-primary/5 transition-colors flex items-center gap-2" title="Números que salen menos">
+                                                <i class="fas fa-icicles text-blue-400"></i> Números Fríos
+                                            </button>
+                                            <button id="btn-temporal-ascendente" class="p-2 text-xs font-medium rounded-lg border border-primary/20 bg-white dark:bg-slate-800 hover:bg-primary/5 transition-colors flex items-center gap-2" title="Números en tendencia ascendente">
+                                                <i class="fas fa-arrow-trend-up text-green-500"></i> Tendencia Ascendente
+                                            </button>
+                                            <button id="btn-temporal-descendente" class="p-2 text-xs font-medium rounded-lg border border-primary/20 bg-white dark:bg-slate-800 hover:bg-primary/5 transition-colors flex items-center gap-2" title="Números en tendencia descendente">
+                                                <i class="fas fa-arrow-trend-down text-red-400"></i> Tendencia Descendente
+                                            </button>
+                                            <button id="btn-distribucion" class="p-2 text-xs font-medium rounded-lg border border-primary/20 bg-white dark:bg-slate-800 hover:bg-primary/5 transition-colors flex items-center gap-2" title="Distribución balanceada por rangos">
+                                                <i class="fas fa-scale-balanced text-purple-500"></i> Distribución Balanceada
+                                            </button>
+                                            <button id="btn-hibrido-equilibrado" class="p-2 text-xs font-medium rounded-lg border border-primary/20 bg-white dark:bg-slate-800 hover:bg-primary/5 transition-colors flex items-center gap-2" title="Combina frecuencia + temporal + distribución">
+                                                <i class="fas fa-bullseye text-primary"></i> Híbrido Equilibrado
+                                            </button>
+                                            <button id="btn-hibrido-agresivo" class="p-2 text-xs font-medium rounded-lg border border-primary/20 bg-white dark:bg-slate-800 hover:bg-primary/5 transition-colors flex items-center gap-2" title="Prioriza tendencias recientes">
+                                                <i class="fas fa-rocket text-orange-500"></i> Híbrido Agresivo
+                                            </button>
+                                        </div>
+                                        <div id="loading-generador" class="hidden mt-2 text-xs text-primary flex items-center gap-2">
+                                            <i class="fas fa-spinner fa-spin"></i>
+                                            Generando números inteligentes...
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Cantidad de Jugadas -->

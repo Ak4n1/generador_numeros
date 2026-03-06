@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Quini 6 - Resultados e Historial</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7317cf",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191121",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #362447; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+    <div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+        <header class="flex items-center justify-between border-b border-primary/20 bg-background-light dark:bg-background-dark px-6 py-4 sticky top-0 z-50 backdrop-blur-md">
+            <div class="flex items-center gap-6">
+                <div class="flex items-center gap-3">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white shadow-lg shadow-primary/30">
+                        <i class="fas fa-dice text-xl"></i>
+                    </div>
+                    <h1 class="text-xl font-bold tracking-tight">Generador de Lotería</h1>
+                </div>
+                
+                <!-- Navbar -->
+                <nav class="flex items-center gap-1">
+                    <a href="index.html" class="flex items-center gap-2 px-4 py-2 text-slate-700 dark:text-slate-300 hover:bg-primary/10 hover:text-primary transition-colors rounded-lg font-medium text-sm">
+                        <i class="fas fa-dice"></i>
+                        <span>Generador</span>
+                    </a>
+                    <a href="quini6.html" class="flex items-center gap-2 px-4 py-2 text-slate-700 dark:text-slate-300 hover:bg-primary/10 hover:text-primary transition-colors rounded-lg font-medium text-sm">
+                        <i class="fas fa-trophy"></i>
+                        <span>Quini 6</span>
+                    </a>
+                </nav>
+            </div>
+        </header>
+
+        <main class="flex-1 p-6 max-w-7xl mx-auto w-full">
+            <!-- Resultados de Hoy -->
+            <section class="mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white">
+                        <i class="fas fa-calendar-day text-primary mr-2"></i>
+                        Resultados de Hoy
+                    </h2>
+                    <button id="btn-actualizar" class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-600 text-white hover:scale-105 transition-transform rounded-lg shadow-lg font-semibold text-sm">
+                        <i class="fas fa-sync-alt"></i>
+                        Actualizar
+                    </button>
+                </div>
+                
+                <div id="resultados-hoy" class="grid gap-4">
+                    <!-- Loading state -->
+                    <div class="flex items-center justify-center py-12">
+                        <div class="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Historial -->
+            <section>
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white">
+                        <i class="fas fa-history text-primary mr-2"></i>
+                        Historial
+                    </h2>
+                </div>
+                
+                <div id="historial" class="grid gap-4">
+                    <!-- Loading state -->
+                    <div class="flex items-center justify-center py-12">
+                        <div class="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="mt-auto border-t border-slate-200 dark:border-primary/10 bg-white dark:bg-slate-900/50 py-8 px-6">  
+            <div class="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center gap-2 text-slate-500 text-sm">
+                    <i class="fas fa-shield-alt text-primary"></i>
+                    © 2024 Generador de Lotería. Juega con responsabilidad.
+                </div>
+                <div class="flex items-center gap-2 text-slate-500 text-sm">
+                    Desarrollado por
+                    <a href="https://ak4n1.site" target="_blank" rel="noopener noreferrer" class="text-primary hover:text-primary/80 font-semibold transition-colors flex items-center gap-1">
+                        Ak4n1
+                        <i class="fas fa-external-link-alt text-xs"></i>
+                    </a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script type="module" src="js/quini6.js"></script>
+</body>
+</html>

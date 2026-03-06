@@ -3,6 +3,8 @@ import { UIHelper } from './utils/helpers.js';
 import { ResultadosUI, GuardadosUI } from './ui/resultados.js';
 import { CustomSelect } from './ui/customSelect.js';
 import { FiltrosAvanzadosModal } from './ui/filtrosAvanzadosModal.js';
+import ResultadosQuini6Modal from './ui/resultadosQuini6Modal.js';
+import ResultadosQuinielaModal from './ui/resultadosQuinielaModal.js';
 import { GeneradorService } from './services/GeneradorService.js';
 import { AutoGeneradorService } from './services/AutoGeneradorService.js';
 import { ItemAutoShuffleService } from './services/ItemAutoShuffleService.js';
@@ -95,6 +97,10 @@ class App {
         // Conectar callbacks de shuffle
         resultadosUI.onShuffle = (index) => this.shuffleJugada(index);
         resultadosUI.onToggleAutoShuffle = (index, button) => this.toggleAutoShuffleJugada(index, button);
+
+        // Inicializar modales de resultados
+        this.resultadosQuini6Modal = new ResultadosQuini6Modal();
+        this.resultadosQuinielaModal = new ResultadosQuinielaModal();
     }
 
     /**
@@ -197,6 +203,15 @@ class App {
         // Botón filtros avanzados
         document.getElementById('btn-filtros-avanzados').addEventListener('click', () => {
             this.abrirFiltrosAvanzados();
+        });
+
+        // Botones de resultados
+        document.getElementById('btn-ver-resultados-quini6').addEventListener('click', () => {
+            this.resultadosQuini6Modal.mostrar();
+        });
+        
+        document.getElementById('btn-ver-resultados-quiniela').addEventListener('click', () => {
+            this.resultadosQuinielaModal.mostrar();
         });
     }
 

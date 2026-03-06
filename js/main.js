@@ -115,26 +115,37 @@ class App {
     initUI() {
         console.log('🎨 [DEBUG] Inicializando UI...');
         
-        const resultadosUI = new ResultadosUI('resultados-container');
-        const guardadosUI = new GuardadosUI('guardados-container');
-        
-        if (!resultadosUI.container) {
-            console.error('❌ [DEBUG] FALLO CRÍTICO: ResultadosUI no se inicializó correctamente');
-            return;
+        try {
+            console.log('🔧 [DEBUG] Creando ResultadosUI...');
+            const resultadosUI = new ResultadosUI('resultados-container');
+            console.log('🔧 [DEBUG] ResultadosUI creado:', resultadosUI);
+            
+            console.log('🔧 [DEBUG] Creando GuardadosUI...');
+            const guardadosUI = new GuardadosUI('guardados-container');
+            console.log('🔧 [DEBUG] GuardadosUI creado:', guardadosUI);
+            
+            if (!resultadosUI.container) {
+                console.error('❌ [DEBUG] FALLO CRÍTICO: ResultadosUI no se inicializó correctamente');
+                return;
+            }
+            
+            console.log('🔧 [DEBUG] Creando ResultadosController...');
+            this.resultadosController = new ResultadosController(resultadosUI, guardadosUI);
+            console.log('✅ [DEBUG] ResultadosController creado');
+
+            // Conectar callbacks de shuffle
+            resultadosUI.onShuffle = (index) => this.shuffleJugada(index);
+            resultadosUI.onToggleAutoShuffle = (index, button) => this.toggleAutoShuffleJugada(index, button);
+
+            // Inicializar modales de resultados
+            this.resultadosQuini6Modal = new ResultadosQuini6Modal();
+            this.resultadosQuinielaModal = new ResultadosQuinielaModal();
+            
+            console.log('✅ [DEBUG] UI inicializada completamente');
+            
+        } catch (error) {
+            console.error('❌ [DEBUG] ERROR CRÍTICO en initUI:', error);
         }
-        
-        this.resultadosController = new ResultadosController(resultadosUI, guardadosUI);
-        console.log('✅ [DEBUG] ResultadosController creado');
-
-        // Conectar callbacks de shuffle
-        resultadosUI.onShuffle = (index) => this.shuffleJugada(index);
-        resultadosUI.onToggleAutoShuffle = (index, button) => this.toggleAutoShuffleJugada(index, button);
-
-        // Inicializar modales de resultados
-        this.resultadosQuini6Modal = new ResultadosQuini6Modal();
-        this.resultadosQuinielaModal = new ResultadosQuinielaModal();
-        
-        console.log('✅ [DEBUG] UI inicializada completamente');
     }
 
     /**

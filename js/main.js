@@ -265,6 +265,13 @@ class App {
                 this.generarNumerosInteligentes('hibrido-agresivo');
             });
         }
+        
+        const btnAntiCrowd = document.getElementById('btn-anti-crowd');
+        if (btnAntiCrowd) {
+            btnAntiCrowd.addEventListener('click', () => {
+                this.generarNumerosInteligentes('anti-crowd');
+            });
+        }
 
         // Botón toggle acordeón generadores inteligentes
         const btnToggleGeneradores = document.getElementById('btn-toggle-generadores');
@@ -587,6 +594,18 @@ class App {
                         </div>
                         <div class="text-sm text-slate-600 dark:text-slate-400">${totalSorteos} sorteos históricos</div>
                     </div>
+                    
+                    <!-- Advertencia importante -->
+                    <div class="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-700/50 rounded-lg p-3 mb-3">
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-info-circle text-orange-600 dark:text-orange-400 mt-0.5 text-sm"></i>
+                            <div class="text-xs text-orange-800 dark:text-orange-200 text-left">
+                                <div class="font-semibold mb-1">Importante:</div>
+                                <div>Los algoritmos analizan patrones históricos. Cada sorteo es independiente y aleatorio.</div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="text-sm text-green-600 dark:text-green-400 mb-3 font-medium">
                         Números generados exitosamente
                     </div>
@@ -622,7 +641,8 @@ class App {
             'btn-temporal-descendente',
             'btn-distribucion',
             'btn-hibrido-equilibrado',
-            'btn-hibrido-agresivo'
+            'btn-hibrido-agresivo',
+            'btn-anti-crowd'
         ];
 
         botones.forEach(id => {

@@ -125,6 +125,17 @@
                                         <i id="icono-acordeon" class="fas fa-chevron-down text-primary transition-transform"></i>
                                     </button>
                                     <div id="contenido-generadores" class="hidden border-t border-primary/20 p-4 bg-white dark:bg-slate-800/50">
+                                        <!-- Advertencia importante -->
+                                        <div class="mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700/50 rounded-lg">
+                                            <div class="flex items-start gap-2">
+                                                <i class="fas fa-exclamation-triangle text-yellow-600 dark:text-yellow-400 mt-0.5 text-sm"></i>
+                                                <div class="text-xs text-yellow-800 dark:text-yellow-200">
+                                                    <div class="font-semibold mb-1">Importante:</div>
+                                                    <div>Los algoritmos analizan datos históricos. Cada sorteo es independiente y aleatorio.</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
                                         <div class="grid grid-cols-1 gap-2">
                                             <button id="btn-frecuencia-alta" class="p-2 text-xs font-medium rounded-lg border border-primary/20 bg-white dark:bg-slate-800 hover:bg-primary/5 transition-colors flex items-center gap-2" title="Números que salen más seguido">
                                                 <i class="fas fa-fire text-red-500"></i> Números Calientes
@@ -146,6 +157,9 @@
                                             </button>
                                             <button id="btn-hibrido-agresivo" class="p-2 text-xs font-medium rounded-lg border border-primary/20 bg-white dark:bg-slate-800 hover:bg-primary/5 transition-colors flex items-center gap-2" title="Prioriza tendencias recientes">
                                                 <i class="fas fa-rocket text-orange-500"></i> Híbrido Agresivo
+                                            </button>
+                                            <button id="btn-anti-crowd" class="p-2 text-xs font-medium rounded-lg border border-primary/20 bg-white dark:bg-slate-800 hover:bg-primary/5 transition-colors flex items-center gap-2" title="Evita patrones comunes para reducir competencia">
+                                                <i class="fas fa-user-ninja text-indigo-500"></i> Anti-Multitud
                                             </button>
                                         </div>
                                         <div id="loading-generador" class="hidden mt-2 text-xs text-primary flex items-center gap-2">

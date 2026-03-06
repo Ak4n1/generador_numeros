@@ -167,6 +167,10 @@ export class GeneradorInteligenteService {
                     resultado = this.generarNumerosHibridoAgresivo(sorteo);
                     break;
                 
+                case 'anti-crowd':
+                    resultado = this.generarNumerosAntiCrowd(sorteo);
+                    break;
+                
                 default:
                     throw new Error(`Algoritmo "${algoritmo}" no válido`);
             }
@@ -377,6 +381,184 @@ export class GeneradorInteligenteService {
         };
     }
 
+    generarNumerosAntiCrowd(tipoSorteo) {
+        const maxIntentos = 100;
+        let mejorCombinacion = null;
+        let mejorPuntuacion = -1;
+
+        for (let intento = 0; intento < maxIntentos; intento++) {
+            const candidatos = this.generarCandidatosAntiCrowd();
+            const puntuacion = this.evaluarCombinacionAntiCrowd(candidatos);
+            
+            if (puntuacion > mejorPuntuacion) {
+                mejorPuntuacion = puntuacion;
+                mejorCombinacion = [...candidatos];
+            }
+            
+            // Si encontramos una combinación excelente, la usamos
+            if (puntuacion >= 80) break;
+        }
+
+        return {
+            numeros: mejorCombinacion.sort((a, b) => a - b),
+            algoritmo: 'anti-crowd',
+            timestamp: new Date().toISOString(),
+            estadisticas: { 
+                puntuacion: mejorPuntuacion,
+                suma: mejorCombinacion.reduce((a, b) => a + b, 0),
+                numerosAltos: mejorCombinacion.filter(n => n >= 32).length,
+                numerosBajos: mejorCombinacion.filter(n => n <= 15).length
+            }
+        };
+    }
+
+    generarCandidatosAntiCrowd() {
+        const numeros = [];
+        const usados = new Set();
+        
+        // Paso 1: Asegurar mínimo 3 números entre 32-45
+        const numerosAltos = [];
+        for (let i = 32; i <= 45; i++) {
+            numerosAltos.push(i);
+        }
+        
+        // Seleccionar 3-4 números altos aleatoriamente
+        const cantidadAltos = 3 + Math.floor(Math.random() * 2); // 3 o 4
+        for (let i = 0; i < cantidadAltos; i++) {
+            let numero;
+            do {
+                numero = numerosAltos[Math.floor(Math.random() * numerosAltos.length)];
+            } while (usados.has(numero));
+            
+            numeros.push(numero);
+            usados.add(numero);
+        }
+        
+        // Paso 2: Completar con números restantes, evitando 0-15 en exceso
+        const numerosRestantes = [];
+        
+        // Agregar números medios (16-31) con mayor peso
+        for (let i = 16; i <= 31; i++) {
+            if (!usados.has(i)) {
+                numerosRestantes.push(i, i, i); // Triple peso
+            }
+        }
+        
+        // Agregar números bajos (0-15) con menor peso
+        for (let i = 0; i <= 15; i++) {
+            if (!usados.has(i)) {
+                numerosRestantes.push(i); // Peso simple
+            }
+        }
+        
+        // Completar hasta 6 números
+        while (numeros.length < 6 && numerosRestantes.length > 0) {
+            const indice = Math.floor(Math.random() * numerosRestantes.length);
+            const numero = numerosRestantes[indice];
+            
+            if (!usados.has(numero)) {
+                // Verificar restricción: máximo 2 números entre 0-15
+                const numerosBajos = numeros.filter(n => n <= 15).length;
+                if (numero <= 15 && numerosBajos >= 2) {
+                    // Buscar alternativa en rango medio
+                    const alternativas = numerosRestantes.filter(n => n > 15 && !usados.has(n));
+                    if (alternativas.length > 0) {
+                        const alternativa = alternativas[Math.floor(Math.random() * alternativas.length)];
+                        numeros.push(alternativa);
+                        usados.add(alternativa);
+                    }
+                } else {
+                    numeros.push(numero);
+                    usados.add(numero);
+                }
+            }
+            
+            // Remover número usado de candidatos
+            numerosRestantes.splice(indice, 1);
+        }
+        
+        // Si no llegamos a 6, completar con números aleatorios válidos
+        while (numeros.length < 6) {
+            const numero = Math.floor(Math.random() * 46);
+            if (!usados.has(numero)) {
+                numeros.push(numero);
+                usados.add(numero);
+            }
+        }
+        
+        return numeros;
+    }
+
+    evaluarCombinacionAntiCrowd(numeros) {
+        let puntuacion = 0;
+        
+        // 1. Penalizar números de fechas (1-31)
+        const numerosFechas = numeros.filter(n => n >= 1 && n <= 31).length;
+        puntuacion -= numerosFechas * 5; // -5 puntos por cada número de fecha
+        
+        // 2. Bonificar números altos (32-45)
+        const numerosAltos = numeros.filter(n => n >= 32).length;
+        puntuacion += numerosAltos * 10; // +10 puntos por cada número alto
+        
+        // 3. Verificar restricción mínima de números altos
+        if (numerosAltos >= 3) {
+            puntuacion += 20; // Bonus por cumplir restricción
+        } else {
+            puntuacion -= 30; // Penalización fuerte
+        }
+        
+        // 4. Verificar restricción máxima de números bajos (0-15)
+        const numerosBajos = numeros.filter(n => n <= 15).length;
+        if (numerosBajos <= 2) {
+            puntuacion += 15; // Bonus por cumplir restricción
+        } else {
+            puntuacion -= 20; // Penalización
+        }
+        
+        // 5. Penalizar secuencias
+        const numerosOrdenados = [...numeros].sort((a, b) => a - b);
+        let secuencias = 0;
+        for (let i = 0; i < numerosOrdenados.length - 1; i++) {
+            if (numerosOrdenados[i + 1] - numerosOrdenados[i] === 1) {
+                secuencias++;
+            }
+        }
+        puntuacion -= secuencias * 15; // -15 puntos por cada secuencia
+        
+        // 6. Bonificar suma alta
+        const suma = numeros.reduce((a, b) => a + b, 0);
+        if (suma > 150) {
+            puntuacion += 25; // Bonus por suma alta
+        } else if (suma < 100) {
+            puntuacion -= 15; // Penalización por suma muy baja
+        }
+        
+        // 7. Bonificar distribución balanceada
+        const rangoBajo = numeros.filter(n => n <= 15).length;
+        const rangoMedio = numeros.filter(n => n > 15 && n <= 30).length;
+        const rangoAlto = numeros.filter(n => n > 30).length;
+        
+        // Penalizar concentración excesiva en un rango
+        const maxConcentracion = Math.max(rangoBajo, rangoMedio, rangoAlto);
+        if (maxConcentracion <= 3) {
+            puntuacion += 10; // Bonus por buena distribución
+        } else if (maxConcentracion >= 5) {
+            puntuacion -= 10; // Penalización por mala distribución
+        }
+        
+        // 8. Evitar patrones obvios (todos pares, todos impares)
+        const pares = numeros.filter(n => n % 2 === 0).length;
+        if (pares === 0 || pares === 6) {
+            puntuacion -= 20; // Penalización por patrón obvio
+        }
+        
+        // 9. Bonificar números "feos" (terminados en 7, 8, 9)
+        const numerosFeos = numeros.filter(n => n % 10 >= 7).length;
+        puntuacion += numerosFeos * 3; // +3 puntos por cada número "feo"
+        
+        return Math.max(0, puntuacion); // No permitir puntuaciones negativas
+    }
+
     seleccionarNumerosConPeso(candidatos, propiedad, invertir = false) {
         const numeros = [];
         const usados = new Set();
@@ -505,7 +687,8 @@ export class GeneradorInteligenteService {
             'temporal-descendente': 'Números con tendencia descendente en sorteos recientes',
             'distribucion': 'Números balanceados por rangos, paridad y sumas históricas',
             'hibrido-equilibrado': 'Combina frecuencia, patrones temporales y distribución',
-            'hibrido-agresivo': 'Prioriza tendencias recientes con mayor peso'
+            'hibrido-agresivo': 'Prioriza tendencias recientes con mayor peso',
+            'anti-crowd': 'Evita patrones comunes elegidos por humanos. NO aumenta probabilidad de ganar, solo reduce competencia por premios'
         };
 
         return descripciones[algoritmo] || 'Algoritmo de generación inteligente';
@@ -522,7 +705,8 @@ export class GeneradorInteligenteService {
             'temporal-descendente': 'Basado en Análisis de Series Temporales (Yule, 1927)',
             'distribucion': 'Basado en Distribución Normal (Gauss, 1809)',
             'hibrido-equilibrado': 'Combinación de Técnicas Estadísticas Clásicas',
-            'hibrido-agresivo': 'Basado en Análisis Multivariado (Hotelling, 1933)'
+            'hibrido-agresivo': 'Basado en Análisis Multivariado (Hotelling, 1933)',
+            'anti-crowd': 'Basado en Psicología Cognitiva y Teoría de Juegos (Nash, 1950)'
         };
 
         return autores[algoritmo] || 'Algoritmo estadístico clásico';
@@ -539,7 +723,8 @@ export class GeneradorInteligenteService {
             'temporal-descendente': '<i class="fas fa-arrow-trend-down text-red-400"></i>',
             'distribucion': '<i class="fas fa-scale-balanced text-purple-500"></i>',
             'hibrido-equilibrado': '<i class="fas fa-bullseye text-primary"></i>',
-            'hibrido-agresivo': '<i class="fas fa-rocket text-orange-500"></i>'
+            'hibrido-agresivo': '<i class="fas fa-rocket text-orange-500"></i>',
+            'anti-crowd': '<i class="fas fa-user-ninja text-indigo-500"></i>'
         };
 
         return iconos[algoritmo] || '<i class="fas fa-brain text-primary"></i>';

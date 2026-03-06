@@ -1,6 +1,6 @@
 import { GeneradorBase } from './base.js';
 
-export class GeneradorQuiniela extends GeneradorBase {
+export class GeneradorTipoMultipleCifras extends GeneradorBase {
     constructor(config = {}) {
         super(config);
         this.cifras = config.cifras || 4;

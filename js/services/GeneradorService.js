@@ -1,5 +1,5 @@
-import { GeneradorQuini6 } from '../generadores/quini6.js';
-import { GeneradorQuiniela, GeneradorQuinielaCompleta } from '../generadores/quiniela.js';
+import { GeneradorTipoSeisCifras } from '../generadores/tipoSeisCifras.js';
+import { GeneradorTipoMultipleCifras } from '../generadores/tipoMultipleCifras.js';
 
 /**
  * Servicio para manejar la lógica de generación de números
@@ -15,19 +15,19 @@ export class GeneradorService {
     crearGenerador(config) {
         switch (config.tipo) {
             case '6-numeros':
-                return new GeneradorQuini6(config);
+                return new GeneradorTipoSeisCifras(config);
 
             case 'quiniela-1':
-                return new GeneradorQuiniela({ ...config, cifras: 1, cantidadNumeros: 1 });
+                return new GeneradorTipoMultipleCifras({ ...config, cifras: 1, cantidadNumeros: 1 });
 
             case 'quiniela-2':
-                return new GeneradorQuiniela({ ...config, cifras: 2, cantidadNumeros: 1 });
+                return new GeneradorTipoMultipleCifras({ ...config, cifras: 2, cantidadNumeros: 1 });
 
             case 'quiniela-3':
-                return new GeneradorQuiniela({ ...config, cifras: 3, cantidadNumeros: 1 });
+                return new GeneradorTipoMultipleCifras({ ...config, cifras: 3, cantidadNumeros: 1 });
 
             case 'quiniela-4':
-                return new GeneradorQuiniela({ ...config, cifras: 4, cantidadNumeros: 1 });
+                return new GeneradorTipoMultipleCifras({ ...config, cifras: 4, cantidadNumeros: 1 });
 
             default:
                 throw new Error('Tipo de lotería no válido');

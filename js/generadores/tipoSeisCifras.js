@@ -1,6 +1,6 @@
 import { GeneradorBase } from './base.js';
 
-export class GeneradorQuini6 extends GeneradorBase {
+export class GeneradorTipoSeisCifras extends GeneradorBase {
     constructor(config = {}) {
         super(config);
         this.min = 0;
@@ -98,7 +98,7 @@ export class GeneradorQuini6 extends GeneradorBase {
             }
 
             // Convertir a array y ordenar
-            numeros.push(...Array.from(numerosSet).sort((a, b) => a - b));
+            numeros.push(...Array.from(numerosSet));
         }
 
         return {
